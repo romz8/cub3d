@@ -53,6 +53,7 @@ typedef struct s_frame {
 	t_img	img;
 	t_player	player;
   int   map_scale;
+  int   game_map[mapW][mapH];
 }	t_frame;
 
 
@@ -94,5 +95,6 @@ void	player_move(t_player *player, float movespeed);
 int	move(int keycode, t_frame *frame);
 void	map_render(int map[mapW][mapH], t_frame *frame);
 void	draw_cube(t_frame *frame, int x_start, int y_start, int color);
+int   ray_cast(t_frame *frame);
 
 #endif

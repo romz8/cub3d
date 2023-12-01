@@ -31,8 +31,8 @@ int main(void)
 	player.px = WIDTH/2;
 	player.py = LENGTH/2;
 	player.vector_len = 100;
-	player.dirx = 0;
-	player.diry = -1;
+	player.dirx = -1;
+	player.diry = 1;
 	frame.player = player;
 	
 	
@@ -90,9 +90,10 @@ void	draw_player(t_player *player, t_img *img, t_frame *frame)
 		}
 		i++;
 	}
-	int end_px = player->px + player->vector_len * player->dirx;
-	int end_py = player->py + player->vector_len * player->diry;
-	draw_line(img, player->px, player->py, end_px, end_py, 0x1F51FFFF); 
+	int	ray_len = ray_cast(frame);
+	int end_px = player->px + ray_len * player->dirx;
+	int end_py = player->py + ray_len * player->diry;
+	draw_line(img, player->px, player->py, end_px, end_py, 0x1F51FFFF);
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, img->img, 0, 0);
 }
 
@@ -160,7 +161,6 @@ int key_hook(int keycode, t_frame *frame)
 	return (0);
 }
 
-
 void	clear_screen(t_frame *frame)
 {
 	int x;
@@ -224,4 +224,78 @@ void	draw_cube(t_frame *frame, int x_start, int y_start, int color)
 		}
 		y++;
 	}
+}
+
+int	ray_cast(t_frame *frame)
+{
+	int mapx;
+	int mapy;
+	int stepx;
+	int stepy;
+	int	hit;
+	int	side;
+	double side_distx;
+	double	delta_distx;
+	double side_disty;
+	double	delta_disty;
+	double wall_dist;
+
+	mapx = (int) frame->player.px;
+	mapy = (int) frame->player.py;
+	
+	if (frame->player.dirx == 0)
+		delta_distx =1e30;
+	else
+		delta_distx = fabs(1 / frame->player.dirx);
+	
+	if (frame->player.diry == 0)
+		delta_disty =1e30;
+	else
+		delta_disty = fabs(1 / frame->player.diry);
+	
+	if (frame->player.dirx < 0)
+	{
+		stepx = -1;
+		side_distx = (frame->player.px - mapx) * delta_distx;
+	}
+	else
+	{
+		stepx = 1;
+		side_distx = (mapx + 1.0 - frame->player.px) * delta_distx;
+	}
+	if (frame->player.diry < 0)
+	{
+		stepy = -1;
+		side_disty = (frame->player.py - mapy) * delta_disty;
+	}
+	else
+	{
+		stepy = 1;
+		side_disty = (mapy + 1.0 - frame->player.py) * delta_disty;
+	}
+
+	hit = 0;
+	while (hit == 0)
+	{
+		if (side_distx < side_disty)
+		{
+			side_distx += delta_distx;
+			mapx += stepx;
+			side = 0;
+		}
+		else
+		{
+			side_disty += delta_disty;
+			mapy += stepy;
+			side = 1;
+		}
+		if (worldMap[mapx / frame->map_scale][mapy / frame->map_scale] > 0)
+			hit = 1;
+	}
+	if (side == 0)
+		wall_dist = (mapx - frame->player.px + (1 - stepx) / 2) / frame->player.dirx;
+	else
+		wall_dist = (mapy - frame->player.py + (1 - stepy) / 2) / frame->player.diry;	
+	printf("dist : %f \n", wall_dist);
+	return (wall_dist);
 }
