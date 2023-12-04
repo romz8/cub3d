@@ -95,6 +95,7 @@ void	player_move(t_player *player, float movespeed);
 int	move(int keycode, t_frame *frame);
 void	map_render(int map[mapW][mapH], t_frame *frame);
 void	draw_cube(t_frame *frame, int x_start, int y_start, int color);
-int   ray_cast(t_frame *frame);
+double	ray_cast(t_frame *frame, double dirx, double diry);
+
 
 #endif

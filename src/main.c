@@ -30,7 +30,6 @@ int main(void)
 	
 	player.px = WIDTH/2;
 	player.py = LENGTH/2;
-	player.vector_len = 100;
 	player.dirx = -1;
 	player.diry = 1;
 	frame.player = player;
@@ -54,7 +53,6 @@ void draw_line(t_img *img, int x0, int y0, int x1, int y1, int color) {
     int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
     int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
     int err = dx + dy, e2; /* error value e_xy */
-
     while (1) {
         fill_pxl_mlx(img, x0, y0, color);
         if (x0 == x1 && y0 == y1) break;
@@ -77,6 +75,8 @@ void	draw_player(t_player *player, t_img *img, t_frame *frame)
 	
 	px = player->px;
 	py = player->py;
+	double dirx = player->dirx;
+	double diry = player->diry;
 	map_render(worldMap, frame);
 	i = 0;
 	while (i < WIDTH)
@@ -90,10 +90,21 @@ void	draw_player(t_player *player, t_img *img, t_frame *frame)
 		}
 		i++;
 	}
-	int	ray_len = ray_cast(frame);
-	int end_px = player->px + ray_len * player->dirx;
-	int end_py = player->py + ray_len * player->diry;
-	draw_line(img, player->px, player->py, end_px, end_py, 0x1F51FFFF);
+	double FOV_scale = 0.66;
+	double planeX = diry * FOV_scale; // FOV_scale determines the FOV width
+	double planeY = -dirx * FOV_scale;
+	for (int i = 0; i  < WIDTH ; i++) 
+	{
+    	double cameraX = 2 * i / (double)WIDTH - 1; // x-coordinate in camera space
+    	double rayDirX = dirx + planeX * cameraX;
+    	double rayDirY = diry + planeY * cameraX;
+		
+		int ray_len = (int) ray_cast(frame, rayDirX, rayDirY);
+		int end_px = player->px + ray_len * rayDirX;
+		int end_py = player->py + ray_len * rayDirY;
+		draw_line(img, player->px, player->py, end_px, end_py, 0x1F51FFFF);
+	}
+	draw_line(img, px, py, px + ray_cast(frame, dirx, diry) * dirx, py + ray_cast(frame, dirx, diry) * diry, 0xF70D1AFF);
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, img->img, 0, 0);
 }
 
@@ -133,21 +144,18 @@ void	rotate_vector(t_player *player, double angle)
 int	move(int keycode, t_frame *frame)
 {
    double movespeed = 10;
-   double rotation = 0.1;
+   double rotation = 0.05;
+   printf("we have dirx, diry =(%f, %f) before \n", frame->player.dirx, frame->player.diry);
 
-   if (keycode == ARROW_DOWN) {
-        // Move backward without rotation
-        player_move(&(frame->player), -movespeed);
-    } else if (keycode == ARROW_UP) {
-        // Move forward without rotation
-        player_move(&(frame->player), movespeed);
-    } else if (keycode == ARROW_LEFT) {
-        // Rotate left without moving
+	if (keycode == ARROW_DOWN)
+   		player_move(&(frame->player), -movespeed);
+	else if (keycode == ARROW_UP)
+        player_move(&(frame->player), movespeed); 
+	else if (keycode == ARROW_LEFT)
         rotate_vector(&(frame->player), -rotation);
-    } else if (keycode == ARROW_RIGHT) {
-        // Rotate right without moving
+    else if (keycode == ARROW_RIGHT)
         rotate_vector(&(frame->player), rotation);
-    }
+	printf("we have dirx, diry =(%f, %f) after \n", frame->player.dirx, frame->player.diry);
 	draw_player(&(frame->player), &(frame->img), frame);
     return (0);
 }
@@ -226,7 +234,7 @@ void	draw_cube(t_frame *frame, int x_start, int y_start, int color)
 	}
 }
 
-int	ray_cast(t_frame *frame)
+double	ray_cast(t_frame *frame, double dirx, double diry)
 {
 	int mapx;
 	int mapy;
@@ -243,17 +251,16 @@ int	ray_cast(t_frame *frame)
 	mapx = (int) frame->player.px;
 	mapy = (int) frame->player.py;
 	
-	if (frame->player.dirx == 0)
+	if (dirx == 0)
 		delta_distx =1e30;
 	else
-		delta_distx = fabs(1 / frame->player.dirx);
-	
-	if (frame->player.diry == 0)
+		delta_distx = fabs(1 / dirx);
+	if (diry == 0)
 		delta_disty =1e30;
 	else
-		delta_disty = fabs(1 / frame->player.diry);
+		delta_disty = fabs(1 /diry);
 	
-	if (frame->player.dirx < 0)
+	if (dirx < 0)
 	{
 		stepx = -1;
 		side_distx = (frame->player.px - mapx) * delta_distx;
@@ -263,7 +270,7 @@ int	ray_cast(t_frame *frame)
 		stepx = 1;
 		side_distx = (mapx + 1.0 - frame->player.px) * delta_distx;
 	}
-	if (frame->player.diry < 0)
+	if (diry < 0)
 	{
 		stepy = -1;
 		side_disty = (frame->player.py - mapy) * delta_disty;
@@ -273,7 +280,7 @@ int	ray_cast(t_frame *frame)
 		stepy = 1;
 		side_disty = (mapy + 1.0 - frame->player.py) * delta_disty;
 	}
-
+	//printf("parameter are px,py = (%f, %f) mappx,mapy = (%i, %i) dirx,diry = (%f, %f), side_dx, side_dy = (%f, %f) delta_sidex, delt_sidey = (%f, %f)", frame->player.px, frame->player.py, mapx, mapy, frame->player.dirx, frame->player.diry, side_distx, side_disty, delta_distx, delta_disty);
 	hit = 0;
 	while (hit == 0)
 	{
@@ -292,10 +299,9 @@ int	ray_cast(t_frame *frame)
 		if (worldMap[mapx / frame->map_scale][mapy / frame->map_scale] > 0)
 			hit = 1;
 	}
-	if (side == 0)
-		wall_dist = (mapx - frame->player.px + (1 - stepx) / 2) / frame->player.dirx;
+		if (side == 0)
+		wall_dist = (mapx - frame->player.px + (1 - stepx) / 2) / dirx;
 	else
-		wall_dist = (mapy - frame->player.py + (1 - stepy) / 2) / frame->player.diry;	
-	printf("dist : %f \n", wall_dist);
+		wall_dist = (mapy - frame->player.py + (1 - stepy) / 2) / diry;	
 	return (wall_dist);
 }
