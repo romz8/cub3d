@@ -12,51 +12,9 @@
 
 #include "cub3d.h"
 
-void	map_render(int map[mapW][mapH], t_frame *frame)
-{
-	int i;
-	int	j;
-
-	clear_screen(frame);
-	i = 0;
-	while (i < mapW)
-	{
-		j = 0;
-		while (j < mapH)
-		{
-			if (map[j][i] != 0)
-				draw_cube(frame, i * frame->map_scale, j * frame->map_scale, WALL_COLOR);
-			else
-			 	draw_cube(frame, i * frame->map_scale , j * frame->map_scale , 0x00000000);
-			j++;
-		}
-		i++;
-	}
-}
-
-void	draw_cube(t_frame *frame, int x_start, int y_start, int color)
-{
-	int	x;
-	int	y;
-
-	y = y_start;
-	while (y < y_start + frame->map_scale)
-	{
-		x = x_start;
-		while (x < x_start + frame->map_scale)
-		{
-				if ((x >= 0 && x < WIDTH)  && (y >= 0 && y < LENGTH))
-				{
-					if ((x > x_start && x < x_start + 63) && (y > y_start && y < y_start + 63))
-						fill_pxl_mlx(&(frame->img), x, y, color);
-                	else
-                    	fill_pxl_mlx(&(frame->img), x, y, 0xFFFFFF);
-				}
-			x++;
-		}
-		y++;
-	}
-}
+void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color);
+void	render_plane(t_frame *frame);
+int		color_ray(t_ray *ray);
 
 void	clear_screen(t_frame *frame)
 {
@@ -76,68 +34,13 @@ void	clear_screen(t_frame *frame)
 	}
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
 }
-void draw_line(t_img *img, int x0, int y0, int x1, int y1, int color) {
-    int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
-    int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
-    int err = dx + dy, e2; /* error value e_xy */
-    while (1) {
-        fill_pxl_mlx(img, x0, y0, color);
-        if (x0 == x1 && y0 == y1) break;
-        e2 = 2 * err;
-        if (e2 >= dy) { /* e_xy+e_x > 0 */
-            err += dy;
-            x0 += sx;
-        }
-        if (e2 <= dx) { /* e_xy+e_y < 0 */
-            err += dx;
-            y0 += sy;
-        }
-    }
-}
 
-void	draw_player(t_player *player, t_img *img, t_frame *frame)
+void	draw_player(t_frame *frame)
 {
-	int	px, py;
-	int	i,j;
-	
-	px = player->px;
-	py = player->py;
-	double dirx = player->dirx;
-	double diry = player->diry;
-	map_render(frame->game_map, frame);
-	i = 0;
-	while (i < WIDTH)
-	{
-		j = 0;
-		while (j < LENGTH)
-		{
-			if ((px - 3 < i) && (i < px + 3) && (py - 3 < j) && ( j< py + 3))
-				fill_pxl_mlx(img, i, j, 0xFFFF00);
-			j++;
-		}
-		i++;
-	}
-	double FOV_scale = 0.66;
-	double planeX = diry * FOV_scale; // FOV_scale determines the FOV width
-	double planeY = -dirx * FOV_scale;
-	for (int i = 0; i  < WIDTH ; i++) 
-	{
-    	double cameraX = 2 * i / (double)WIDTH - 1; // x-coordinate in camera space
-    	double rayDirX = dirx + planeX * cameraX;
-    	double rayDirY = diry + planeY * cameraX;
-		t_ray ray;
-		ray.ray_dirx = rayDirX;
-		ray.ray_diry = rayDirY;
-		int ray_len = (int) ray_cast(frame, &ray);
-		int end_px = player->px + ray_len * rayDirX;
-		int end_py = player->py + ray_len * rayDirY;
-		draw_line(img, player->px, player->py, end_px, end_py, 0x1F51FFFF);
-	}
-	t_ray centre_ray;
-	centre_ray.ray_dirx = dirx;
-	centre_ray.ray_diry = diry;
-	draw_line(img, px, py, px + ray_cast(frame, &centre_ray) * dirx, py + ray_cast(frame, &centre_ray) * diry, 0xF70D1AFF);
-	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, img->img, 0, 0);
+	clear_screen(frame);
+	//mlx_destroy_image(frame->mlx, &(frame->img));
+	render_plane(frame);
+	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
 }
 
 void	fill_pxl_mlx(t_img *img, int x, int y, int color)
@@ -147,4 +50,68 @@ void	fill_pxl_mlx(t_img *img, int x, int y, int color)
 	dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
 	*(unsigned int *) dst = color;
 	return;
+}
+
+void	render_plane(t_frame *frame)
+{
+	double planeX;
+	double planeY;
+	double cameraX;
+	double rayDirX;
+	double rayDirY;
+	t_ray	ray;
+	double	plane_dist;
+	int	wall_height;
+	int wslice_start;
+	int wslice_end;
+	int	i;
+
+	planeX = frame->player.diry * FOV;
+	planeY = -frame->player.dirx * FOV;
+	i = 0;
+	while (i < WIDTH)
+	{
+		cameraX = 2 * (i / (double) WIDTH) - 1;
+		rayDirX = frame->player.dirx + planeX * cameraX;
+    	rayDirY = frame->player.diry + planeY * cameraX;
+		init_ray(&ray, frame, rayDirX, rayDirY);
+		plane_dist = ray_cast(frame, &ray);
+		wall_height = LENGTH / plane_dist;
+		wslice_start = LENGTH / 2 - wall_height / 2;
+		wslice_end = LENGTH / 2 + wall_height / 2;
+		if (wslice_start < 0)
+			wslice_start = 0;
+		if (wslice_end > LENGTH)
+			wslice_end = LENGTH - 1;
+		draw_line(&(frame->img), i, wslice_start, i, wslice_end, color_ray(&ray));
+		i++;
+	}
+}
+
+void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color)
+{
+	int	y;
+
+	y = slice_start;
+	while (y < slice_end)
+	{
+		fill_pxl_mlx(&(frame->img), x, y, color);
+		y++;
+	}
+	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
+}
+
+int	color_ray(t_ray *ray)
+{
+	int color;
+
+	if (ray->wall_type == 1)
+		color = 0x1F51FFFF;
+	else if (ray->wall_type == 2)
+		color = 0xFF7F50FF;
+	else
+		color = 0x32CD32FF;
+	if (ray->side == 1)
+		color /= 2;
+	return (color);
 }

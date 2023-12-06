@@ -29,6 +29,7 @@
 # define ARROW_LEFT 123
 # define ARROW_RIGHT 124
 # define WALL_COLOR 0xC0C0C0FF
+# define FOV 0.66
 
 typedef struct	s_img 
 {
@@ -44,7 +45,8 @@ typedef struct player {
 	double	py;
   double  dirx;
   double  diry;
-  double  vector_len;
+  double  planeX;
+  double  planeY;
 }	t_player;
 
 typedef struct s_frame {
@@ -67,19 +69,23 @@ typedef struct s_ray{
   double  side_disty;
   double  delta_distx;
   double  delta_disty;
+  int   side;
+  int   wall_type;
 } t_ray;
 
-void	draw_player(t_player *player, t_img *img, t_frame *frame);
+void	draw_player(t_frame *frame);
 void	fill_pxl_mlx(t_img *img, int x, int y, int color);
 int		esc_hook(int keycode, t_frame *frame);
 int   close_handler(t_frame *frame);
 int   key_hook(int keycode, t_frame *frame);
-void	player_move(t_player *player, float movespeed);
+void	player_move(t_frame *frame, float movespeed);
 int	move(int keycode, t_frame *frame);
 void	map_render(int map[mapW][mapH], t_frame *frame);
 void	draw_cube(t_frame *frame, int x_start, int y_start, int color);
 double	ray_cast(t_frame *frame, t_ray *ray);
 void	clear_screen(t_frame *frame);
+void	init_ray(t_ray *ray, t_frame *frame, double ray_dirx, double ray_diry);
+void  draw_line(t_img *img, int x0, int y0, int x1, int y1, int color);
 
 
 #endif
