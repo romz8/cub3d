@@ -53,49 +53,33 @@ typedef struct s_frame {
 	t_img	img;
 	t_player	player;
   int   map_scale;
-  int   game_map[mapW][mapH];
+  int   (*game_map)[mapW];
 }	t_frame;
 
-
-
-int worldMap[mapW][mapH]=
-{ 
-  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,1},
-  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-};
-
+typedef struct s_ray{
+  double ray_dirx;
+  double ray_diry;
+  int mapx;
+  int mapy;
+  int stepx;
+  int stepy;
+  double  side_distx;
+  double  side_disty;
+  double  delta_distx;
+  double  delta_disty;
+} t_ray;
 
 void	draw_player(t_player *player, t_img *img, t_frame *frame);
 void	fill_pxl_mlx(t_img *img, int x, int y, int color);
 int		esc_hook(int keycode, t_frame *frame);
-int		close_handler(t_frame *frame);
+int   close_handler(t_frame *frame);
+int   key_hook(int keycode, t_frame *frame);
 void	player_move(t_player *player, float movespeed);
 int	move(int keycode, t_frame *frame);
 void	map_render(int map[mapW][mapH], t_frame *frame);
 void	draw_cube(t_frame *frame, int x_start, int y_start, int color);
-double	ray_cast(t_frame *frame, double dirx, double diry);
+double	ray_cast(t_frame *frame, t_ray *ray);
+void	clear_screen(t_frame *frame);
 
 
 #endif
