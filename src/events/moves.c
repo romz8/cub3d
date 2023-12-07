@@ -27,23 +27,26 @@ void	player_move(t_frame *frame, float movespeed)
 		return;
 	if(frame->game_map[(int) new_posy][ (int) new_posx] != 0)
 		return;
-	player->px += player->dirx * movespeed;
-	player->py += player->diry * movespeed;
+	player->px = new_posx;
+	player->py = new_posy;
 }
 
-void	rotate_vector(t_player *player, double angle)
+void	rotate_vector(t_frame *frame, double angle)
 {
 	double old_dirx;
-	double	old_diry;
-	double	old_planeX;
+	double	old_planex;
+	t_player	*player;
 
+	player = &frame->player;
 	old_dirx = player->dirx;
-	old_diry = player->diry;
-	old_planeX = player->planeX;
-	player->dirx = old_dirx * cos(angle) - old_diry * sin(angle);
-	player->diry = old_dirx * sin(angle) + old_diry * cos(angle);
-	player->planeX = player->planeX * cos(angle) - player->planeY * sin(angle);
-	player->planeY = old_planeX * sin(angle) + player->planeY * cos(angle);
+	old_planex = player->plane_x;
+	
+	player->dirx = player->dirx * cos(angle) - player->diry * sin(angle);
+	player->diry = old_dirx * sin(angle) + player->diry * cos(angle);
+	player->plane_x = player->plane_x * cos(angle) - player->plane_y * sin(angle);
+	player->plane_y = old_planex * sin(angle) + player->plane_y * cos(angle);
+	// player->planeX = player->planeX * cos(angle) - player->planeY * sin(angle);
+	// player->planeY = old_planeX * sin(angle) + player->planeY * cos(angle);
 }
 int	move(int keycode, t_frame *frame)
 {
@@ -55,9 +58,9 @@ int	move(int keycode, t_frame *frame)
 	else if (keycode == ARROW_UP)
         player_move(frame, -movespeed); 
 	else if (keycode == ARROW_LEFT)
-        rotate_vector(&(frame->player), rotation);
+        rotate_vector(frame, rotation);
     else if (keycode == ARROW_RIGHT)
-        rotate_vector(&(frame->player), -rotation);
+        rotate_vector(frame, -rotation);
 	draw_player(frame);
     return (0);
 }

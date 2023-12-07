@@ -45,8 +45,8 @@ typedef struct player {
 	double	py;
   double  dirx;
   double  diry;
-  double  planeX;
-  double  planeY;
+  double  plane_x;
+  double  plane_y;
 }	t_player;
 
 typedef struct s_frame {
@@ -61,6 +61,7 @@ typedef struct s_frame {
 typedef struct s_ray{
   double ray_dirx;
   double ray_diry;
+  double camera_x;
   int mapx;
   int mapy;
   int stepx;
@@ -71,6 +72,10 @@ typedef struct s_ray{
   double  delta_disty;
   int   side;
   int   wall_type;
+  double  wall_dist;
+  int  w_height;
+  int  w_start;
+  int  w_end;
 } t_ray;
 
 void	draw_player(t_frame *frame);
@@ -82,10 +87,12 @@ void	player_move(t_frame *frame, float movespeed);
 int	move(int keycode, t_frame *frame);
 void	map_render(int map[mapW][mapH], t_frame *frame);
 void	draw_cube(t_frame *frame, int x_start, int y_start, int color);
-double	ray_cast(t_frame *frame, t_ray *ray);
+int   raycasting(t_frame *frame);
 void	clear_screen(t_frame *frame);
-void	init_ray(t_ray *ray, t_frame *frame, double ray_dirx, double ray_diry);
 void  draw_line(t_img *img, int x0, int y0, int x1, int y1, int color);
+
+void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color);
+int	color_ray(t_ray *ray);
 
 
 #endif
