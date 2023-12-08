@@ -40,13 +40,10 @@ void	rotate_vector(t_frame *frame, double angle)
 	player = &frame->player;
 	old_dirx = player->dirx;
 	old_planex = player->plane_x;
-	
 	player->dirx = player->dirx * cos(angle) - player->diry * sin(angle);
 	player->diry = old_dirx * sin(angle) + player->diry * cos(angle);
 	player->plane_x = player->plane_x * cos(angle) - player->plane_y * sin(angle);
 	player->plane_y = old_planex * sin(angle) + player->plane_y * cos(angle);
-	// player->planeX = player->planeX * cos(angle) - player->planeY * sin(angle);
-	// player->planeY = old_planeX * sin(angle) + player->planeY * cos(angle);
 }
 int	move(int keycode, t_frame *frame)
 {

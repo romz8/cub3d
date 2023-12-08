@@ -18,7 +18,8 @@ INC = -I ./include/
 GRAPH_COMPILE = -Imlx
 GRAPH_LINKING = -L. -lmlx -framework OpenGL -framework Appkit
 
-SRC = main.c events/hooks.c events/moves.c rendering/raycasting.c rendering/render.c rendering/2d.c
+SRC = main.c events/hooks.c events/moves.c rendering/raycasting.c \
+ rendering/render.c rendering/2d.c rendering/texture_mapping.c
 OBJS_DIR = ./objs/
 SRC_PATH = src/
 SRCS = $(addprefix $(SRC_PATH), $(SRC)) 
@@ -28,19 +29,27 @@ DEPS = $(addprefix $(OBJS_DIR), $(SRC:.c=.d))
 MLX_PATH = ./minilibx
 MLX_NAME = libmlx.a
 MLX = $(MLX_PATH)/$(MLX_NAME)
+LIBFT_PATH = ./libft
+LIBFT_NAME = libft.a
+LIBFT = $(LIBFT_PATH)/$(LIBFT_NAME)
 
 NAME = cub3d
 
-all: $(MLX) $(OBJS_DIR) $(NAME) 
+all: $(MLX) $(LIBFT) $(OBJS_DIR) $(NAME) 
 
 $(MLX):
 	@echo "Building MiniLibX"
 	@make -sC $(MLX_PATH) all
 	@cp $(MLX) . 
 
+$(LIBFT):
+	@echo "Building Libft"
+	@make -sC $(LIBFT_PATH) all
+	@cp $(LIBFT) . 
+
 -include $(DEPS)
 $(NAME): $(OBJS)
-	$(CC) -o $(NAME) $(OBJS) $(GRAPH_LINKING)
+	$(CC) -o $(NAME) $(OBJS) $(GRAPH_LINKING) $(LIBFT_NAME)
 
 $(OBJS_DIR):
 	mkdir -p $(OBJS_DIR)
@@ -52,10 +61,12 @@ $(OBJS_DIR)%.o: $(SRC_PATH)%.c Makefile $(HEADER)
 
 clean:
 	make -C $(MLX_PATH) clean
+	make -C $(LIBFT_PATH) clean
 	rm -rf $(OBJS_DIR)
 
 fclean: clean
-	rm -rf $(NAME) $(MLX_NAME)
+	make -C $(LIBFT_PATH) fclean
+	rm -rf $(NAME) $(MLX_NAME) $(LIBFT_NAME)
 
 re: fclean all
 

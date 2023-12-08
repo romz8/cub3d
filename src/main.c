@@ -55,8 +55,8 @@ int main(void)
 	
 	player.px = 7;
 	player.py = 21;
-	player.dirx = 0;
-	player.diry = -1;
+	player.dirx = 1;
+	player.diry = 1;
 	player.plane_x = player.diry * FOV;
   player.plane_y = - player.dirx * FOV;
   frame.player = player;

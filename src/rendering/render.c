@@ -38,7 +38,6 @@ void	clear_screen(t_frame *frame)
 void	draw_player(t_frame *frame)
 {
 	clear_screen(frame);
-	//mlx_destroy_image(frame->mlx, &(frame->img));
 	raycasting(frame);
 	//render_plane(frame);
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
@@ -70,7 +69,6 @@ void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, in
 		fill_pxl_mlx(&(frame->img), x, y, color);
 		y++;
 	}
-	//mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
 }
 
 int	color_ray(t_ray *ray)

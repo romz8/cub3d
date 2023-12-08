@@ -15,6 +15,7 @@
 # define CUB3D_H
 
 #include "../minilibx/mlx.h"
+#include "../libft/libft.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -24,12 +25,13 @@
 #define mapW 24
 #define mapH 24
 # define ESC 53
-# define ARROW_UP 126
-# define ARROW_DOWN 125
+# define ARROW_UP 125
+# define ARROW_DOWN 126
 # define ARROW_LEFT 123
 # define ARROW_RIGHT 124
 # define WALL_COLOR 0xC0C0C0FF
 # define FOV 0.66
+# define bitmap 64
 
 typedef struct	s_img 
 {
