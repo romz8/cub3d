@@ -31,15 +31,17 @@
 # define ARROW_RIGHT 124
 # define WALL_COLOR 0xC0C0C0FF
 # define FOV 0.66
-# define bitmap 64
+# define  BMAP_SIZE 64
 
 typedef struct	s_img 
 {
 	void	*img;
 	char	*addr;
 	int		bits_per_pixel;
-	int		line_length;
+	int		line_len;
 	int		endian;
+  int   img_w;
+  int   img_h;
 }	t_img;
 
 typedef struct player {
@@ -58,6 +60,9 @@ typedef struct s_frame {
 	t_player	player;
   int   map_scale;
   int   (*game_map)[mapW];
+  t_img loaded_texture;
+  int   ceiling_color;
+  int   floor_color;
 }	t_frame;
 
 typedef struct s_ray{
@@ -78,6 +83,8 @@ typedef struct s_ray{
   int  w_height;
   int  w_start;
   int  w_end;
+  int  textx;
+  int  texty;
 } t_ray;
 
 void	draw_player(t_frame *frame);
@@ -95,6 +102,8 @@ void  draw_line(t_img *img, int x0, int y0, int x1, int y1, int color);
 
 void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color);
 int	color_ray(t_ray *ray);
+void	wall_to_texture(int x, t_ray *ray, t_frame *frame);
+void	load_texture(t_frame *frame, char *path);
 
 
 #endif

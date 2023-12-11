@@ -35,6 +35,8 @@ void	init_ray(t_ray *ray)
 	ray->w_height = 0;
 	ray->w_start = 0;
 	ray->w_end = 0;
+	ray->textx = 0;
+	ray->texty = 0;
 }
 /*
 Configures a ray based on the player's current position and direction.
@@ -53,7 +55,6 @@ void	setup_ray(t_ray *ray, t_frame *frame, int x)
 	player = &frame->player;
 	ray->mapx = (int) player->px;
 	ray->mapy = (int) player->py;
-	printf("at setup we have mapx, mapy = %i, %i \n", ray->mapx, ray->mapy);
 	ray->camera_x = 2 * x / (double) WIDTH - 1;
 	ray->ray_dirx = player->dirx + player->plane_x * ray->camera_x;
 	ray->ray_diry = player->diry + player->plane_y * ray->camera_x;
@@ -65,8 +66,8 @@ void	setup_ray(t_ray *ray, t_frame *frame, int x)
 		ray->delta_disty =1e30;
 	else
 		ray->delta_disty = fabs(1 / ray->ray_diry);
-	printf("we have a player with px, py = %f, %f and planex, planey = %f. %f and dirx, diry = %f, %f", frame->player.px, frame->player.py, frame->player.plane_x, frame->player.plane_y, frame->player.dirx, frame->player.diry);
-	printf("mapx,mapy= %i, %i dirx, diry = %f, %f deltax, deltay= %f, %f \n", ray->mapx, ray->mapy, ray->ray_dirx, ray->ray_diry, ray->delta_distx, ray->delta_disty);
+	//printf("we have a player with px, py = %f, %f and planex, planey = %f. %f and dirx, diry = %f, %f", frame->player.px, frame->player.py, frame->player.plane_x, frame->player.plane_y, frame->player.dirx, frame->player.diry);
+	//printf("mapx,mapy= %i, %i dirx, diry = %f, %f deltax, deltay= %f, %f \n", ray->mapx, ray->mapy, ray->ray_dirx, ray->ray_diry, ray->delta_distx, ray->delta_disty);
 }
 /*
 Determines the step direction (stepx, stepy) and initial side distances
@@ -128,7 +129,6 @@ void	dda_execute(t_ray *ray, t_frame *frame)
 	}
 	ray->side = side;
 	ray->wall_type = frame->game_map[ray->mapy][ray->mapx];
-	printf("at the end of dda we have side_distx, side_disty = %f, %f\n", ray->side_distx, ray->side_disty);
 }
 /*
 Calculates the perpendicular distance of the wall from the player (wall_dist), 
@@ -147,7 +147,6 @@ void	wall_height(t_ray *ray)
 		ray->wall_dist = (ray->side_disty  - ray->delta_disty);
 	if (ray->wall_dist < 0.03)
 		ray->wall_dist = 0.03;
-	printf("wall dist is %f\n", ray->wall_dist);
 	ray->w_height = (int) LENGTH / ray->wall_dist;
 	ray->w_start = (LENGTH / 2) - (ray->w_height / 2);
 	ray->w_end = (LENGTH / 2) + (ray->w_height / 2);
@@ -168,6 +167,7 @@ int	raycasting(t_frame *frame)
 	t_ray ray;
 
 	x = 0;
+	load_texture(frame, "./assets/redbrick.xpm");
 	while (x < WIDTH)
 	{
 		init_ray(&ray);
@@ -175,7 +175,8 @@ int	raycasting(t_frame *frame)
 		ray_dist_setup(&ray, frame);
 		dda_execute(&ray, frame);
 		wall_height(&ray);
-		render_wall_slice(frame, x, ray.w_start, ray.w_end, color_ray(&ray));
+		//render_wall_slice(frame, x, ray.w_start, ray.w_end, color_ray(&ray));
+		wall_to_texture(x, &ray, frame);
 		x++;
 	}
 	printf("player position is px,py = %f, %f and mapx, mapy = %i, %i\n", frame->player.px, frame->player.py, ray.mapx, ray.mapy);

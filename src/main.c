@@ -50,7 +50,7 @@ int main(void)
 	frame.mlx = mlx_init();
 	frame.mlx_wdw = mlx_new_window(frame.mlx, WIDTH, LENGTH, "Cub3D");
 	img.img = mlx_new_image(frame.mlx, WIDTH, LENGTH);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
+	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_len, &img.endian);
 	frame.img = img;
 	
 	player.px = 7;

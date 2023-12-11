@@ -47,7 +47,10 @@ void	fill_pxl_mlx(t_img *img, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
+	
+	if (x < 0 || x > WIDTH || y < 0 || y > LENGTH)
+		return;
+	dst = img->addr + (y * img->line_len + x * (img->bits_per_pixel / 8));
 	*(unsigned int *) dst = color;
 	return;
 }
@@ -61,8 +64,6 @@ void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, in
 {
 	int	y;
 
-	
-	printf("in printf we w_start, w_end = %i, %i\n", slice_start, slice_end);
 	y = slice_start;
 	while (y < slice_end)
 	{
