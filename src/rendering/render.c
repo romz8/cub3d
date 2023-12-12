@@ -35,12 +35,14 @@ void	clear_screen(t_frame *frame)
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
 }
 
-void	draw_player(t_frame *frame)
+int	draw_player(t_frame *frame)
 {
 	clear_screen(frame);
 	raycasting(frame);
+	//mouse_event(frame);
 	//render_plane(frame);
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
+	return (1);
 }
 
 void	fill_pxl_mlx(t_img *img, int x, int y, int color)

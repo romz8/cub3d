@@ -13,32 +13,6 @@
 #include "cub3d.h"
 
 /*
-initialize a ray structure to zero to avoid any garbage or leftovers data
-in memory : necessart to prevent undefined behaviour
-*/
-void	init_ray(t_ray *ray)
-{
-	ray->ray_dirx = 0.0;
-	ray->ray_diry = 0.0;
-	ray->camera_x = 0.0;
-	ray->mapx = 0;
-	ray->mapy = 0;
-	ray->stepx = 0;
-	ray->stepy = 0;
-	ray->side_distx = 0.0;
-	ray->side_disty = 0.0;
-	ray->delta_distx = 0.0;
-	ray->delta_disty = 0.0;
-	ray->side = 0;
-	ray->wall_type = 0;
-	ray->wall_dist = 0.0;
-	ray->w_height = 0;
-	ray->w_start = 0;
-	ray->w_end = 0;
-	ray->textx = 0;
-	ray->texty = 0;
-}
-/*
 Configures a ray based on the player's current position and direction.
 x is the screen column for which the ray is being cast.
 camera_x calculates the x-coordinate on the camera plane, scaled from -1 
@@ -97,7 +71,7 @@ void	ray_dist_setup(t_ray *ray, t_frame *frame)
 		ray->stepy = 1;
 		ray->side_disty = (ray->mapy + 1.0 - frame->player.py) * ray->delta_disty;
 	}
-	printf("in distsetp we have mapx = %i \n", ray->mapx);
+	//printf("in distsetp we have mapx = %i \n", ray->mapx);
 }
 /*
 Implements the DDA algorithm to find the first wall hit by the ray.
@@ -140,7 +114,7 @@ cameraX and y being the wall height)
 */
 void	wall_height(t_ray *ray)
 {
-	printf("at wall_height we side_distx, side_disty = %f, %f\n", ray->side_distx, ray->side_disty);
+	//printf("at wall_height we side_distx, side_disty = %f, %f\n", ray->side_distx, ray->side_disty);
 	if (ray->side == 0)
 		ray->wall_dist = (ray->side_distx  - ray->delta_distx);
 	else
@@ -154,7 +128,7 @@ void	wall_height(t_ray *ray)
 		ray->w_start = 0;
 	if (ray->w_end >= LENGTH)
 		ray->w_end = LENGTH - 1;
-	printf("at wall_height we w_start, w_end = %i, %i\n", ray->w_start, ray->w_end);
+	//printf("at wall_height we w_start, w_end = %i, %i\n", ray->w_start, ray->w_end);
 }
 
 /*
@@ -167,7 +141,6 @@ int	raycasting(t_frame *frame)
 	t_ray ray;
 
 	x = 0;
-	load_texture(frame, "./assets/redbrick.xpm");
 	while (x < WIDTH)
 	{
 		init_ray(&ray);
@@ -179,6 +152,6 @@ int	raycasting(t_frame *frame)
 		wall_to_texture(x, &ray, frame);
 		x++;
 	}
-	printf("player position is px,py = %f, %f and mapx, mapy = %i, %i\n", frame->player.px, frame->player.py, ray.mapx, ray.mapy);
+	//printf("player position is px,py = %f, %f and mapx, mapy = %i, %i\n", frame->player.px, frame->player.py, ray.mapx, ray.mapy);
 	return (1);
 }

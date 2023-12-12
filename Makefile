@@ -19,7 +19,9 @@ GRAPH_COMPILE = -Imlx
 GRAPH_LINKING = -L. -lmlx -framework OpenGL -framework Appkit
 
 SRC = main.c events/hooks.c events/moves.c rendering/raycasting.c \
- rendering/render.c rendering/2d.c rendering/texture_mapping.c
+ rendering/render.c rendering/2d.c rendering/texture_mapping.c \
+ rendering/init_render.c 
+
 OBJS_DIR = ./objs/
 SRC_PATH = src/
 SRCS = $(addprefix $(SRC_PATH), $(SRC)) 

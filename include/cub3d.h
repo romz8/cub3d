@@ -25,8 +25,12 @@
 #define mapW 24
 #define mapH 24
 # define ESC 53
-# define ARROW_UP 125
-# define ARROW_DOWN 126
+# define W 13
+# define A 0
+# define S 1
+# define D 2
+# define ARROW_UP 126
+# define ARROW_DOWN 125
 # define ARROW_LEFT 123
 # define ARROW_RIGHT 124
 # define WALL_COLOR 0xC0C0C0FF
@@ -58,9 +62,10 @@ typedef struct s_frame {
 	void	*mlx_wdw;
 	t_img	img;
 	t_player	player;
+  char  direction;
   int   map_scale;
   int   (*game_map)[mapW];
-  t_img loaded_texture;
+  t_img loaded_texture[4];
   int   ceiling_color;
   int   floor_color;
 }	t_frame;
@@ -87,23 +92,34 @@ typedef struct s_ray{
   int  texty;
 } t_ray;
 
-void	draw_player(t_frame *frame);
+/* ====== init functions ===================================*/
+void  init_player(t_frame *frame, t_player *player);
+void	init_ray(t_ray *ray);
+
+/*====== rendering functions ================================*/
+int	draw_player(t_frame *frame);
 void	fill_pxl_mlx(t_img *img, int x, int y, int color);
+void	map_render(int map[mapW][mapH], t_frame *frame);
+void	draw_cube(t_frame *frame, int x_start, int y_start, int color);
+void	clear_screen(t_frame *frame);
+void  draw_line(t_img *img, int x0, int y0, int x1, int y1, int color);
+
+/*======= Raycasting Engine ==================================*/
+int   raycasting(t_frame *frame);
+void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color);
+int	color_ray(t_ray *ray);
+void	wall_to_texture(int x, t_ray *ray, t_frame *frame);
+void	load_texture(t_frame *frame);
+
+/*========= Events handlers =============================*/
 int		esc_hook(int keycode, t_frame *frame);
 int   close_handler(t_frame *frame);
 int   key_hook(int keycode, t_frame *frame);
 void	player_move(t_frame *frame, float movespeed);
+void	rotate_vector(t_frame *frame, double angle);
 int	move(int keycode, t_frame *frame);
-void	map_render(int map[mapW][mapH], t_frame *frame);
-void	draw_cube(t_frame *frame, int x_start, int y_start, int color);
-int   raycasting(t_frame *frame);
-void	clear_screen(t_frame *frame);
-void  draw_line(t_img *img, int x0, int y0, int x1, int y1, int color);
-
-void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color);
-int	color_ray(t_ray *ray);
-void	wall_to_texture(int x, t_ray *ray, t_frame *frame);
-void	load_texture(t_frame *frame, char *path);
+int mouse_event(t_frame *frame);
+void mouse_rotate(t_frame *frame, int x);
 
 
 #endif

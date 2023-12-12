@@ -12,7 +12,6 @@
 
 #include "cub3d.h"
 
-//cheeky event functions
 int	esc_hook(int keycode, t_frame *frame)
 {
 	if (keycode == 53)
@@ -35,4 +34,25 @@ int key_hook(int keycode, t_frame *frame)
 	else
 		move(keycode, frame);
 	return (0);
+}
+
+int mouse_event(t_frame *frame)
+{
+	int	x;
+	int	y;
+	int	movement;
+	
+	mlx_mouse_get_pos(frame->mlx_wdw, &x, &y);
+	printf("mouse coordinate at by (x,y) = %i, %i \n", x, y);
+	
+	if (x < 0 || y < 0 || x > WIDTH || y > LENGTH)
+		return (0);
+	else
+		movement = (WIDTH / 2 ) - x;
+	if (movement < 200)
+		rotate_vector(frame, 0.05);
+	else if (movement > 200)
+		rotate_vector(frame, 0.05);
+	draw_player(frame);
+	return (1);
 }

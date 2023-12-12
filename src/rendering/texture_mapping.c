@@ -12,18 +12,29 @@
 
 #include "cub3d.h"
 
-void	load_texture(t_frame *frame, char *path)
+
+void	load_texture(t_frame *frame)
 {
 	t_img	img;
+	char *path[4] = {"./assets/wood.xpm", "./assets/mossy.xpm", "./assets/redbrick.xpm", "./assets/greystone.xpm"};
+	int	i;
 
-	img.img = mlx_xpm_file_to_image(frame->mlx, path, &img.img_w, &img.img_h);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_len, &img.endian);
-	if (!img.addr)
-		printf("IMG NOT LOADED\n"); // te replace with error management
-	frame->loaded_texture = img;
+	i = 0;
+	while (i < 4)
+	{
+		img = frame->loaded_texture[i];
+		img.img = mlx_xpm_file_to_image(frame->mlx, path[i], &img.img_w, &img.img_h);
+		img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_len, &img.endian);
+		if (!img.addr)
+		{
+			printf("Asset image not loaded\n"); 
+			exit(EXIT_FAILURE); // to replace with error management
+		}
+		frame->loaded_texture[i] = img;
+		i++;
+	}
 	frame->floor_color = 0x42424242;
 	frame->ceiling_color = 0x00CEEBFF;
-
 }
 /**
  * Calculates the horizontal texture coordinate (textx) based on the ray's 
@@ -76,7 +87,7 @@ int	pix_bitmap(t_frame *frame, t_ray *ray)
 	char	*pxl;
 	t_img	*img;
 
-	img = &frame->loaded_texture;
+	img = &frame->loaded_texture[ray->wall_type - 1];
 	pxl = img->addr + (ray->texty * img->line_len + ray->textx * (img->bits_per_pixel / 8));
 	return (*(int *) pxl);
 }
