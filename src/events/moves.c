@@ -83,7 +83,6 @@ int	move(int keycode, t_frame *frame)
         rotate_vector(frame, -rotation);
     else if (keycode == ARROW_RIGHT)
         rotate_vector(frame, rotation);
-	draw_player(frame);
     return (0);
 }
 

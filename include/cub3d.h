@@ -72,6 +72,7 @@ typedef struct s_frame {
   int   map_scale;
   int   (*game_map)[mapW];
   t_img loaded_texture[4];
+  t_img sprite[5];
   int   ceiling_color;
   int   floor_color;
 }	t_frame;
@@ -103,11 +104,13 @@ void  init_player(t_frame *frame, t_player *player);
 void	init_ray(t_ray *ray);
 
 /*====== rendering functions ================================*/
-int	draw_player(t_frame *frame);
+int   render(t_frame *frame);
+//int	  draw_player(t_frame *frame);
 void	fill_pxl_mlx(t_img *img, int x, int y, int color);
 void	map_render(int map[mapW][mapH], t_frame *frame);
 void	clear_screen(t_frame *frame);
 void  draw_line(t_img *img, int x0, int y0, int x1, int y1, int color);
+void	draw_player(t_frame	*frame, int	i);
 
 /*======= Raycasting Engine ==================================*/
 int   raycasting(t_frame *frame);
@@ -115,6 +118,7 @@ void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, in
 int	color_ray(t_ray *ray);
 void	wall_to_texture(int x, t_ray *ray, t_frame *frame);
 void	load_texture(t_frame *frame);
+void  load_sprite(t_frame *frame);
 
 /*========= Events handlers =============================*/
 int		esc_hook(int keycode, t_frame *frame);
@@ -122,9 +126,9 @@ int   close_handler(t_frame *frame);
 int   key_hook(int keycode, t_frame *frame);
 void	player_move(t_frame *frame, float movespeed);
 void	rotate_vector(t_frame *frame, double angle);
-int	move(int keycode, t_frame *frame);
-int mouse_event(t_frame *frame);
-void mouse_rotate(t_frame *frame, int x);
-
+int	  move(int keycode, t_frame *frame);
+int   mouse_event(t_frame *frame);
+void  mouse_rotate(t_frame *frame, int x);
+int   sprite_hook(int	key_code, t_frame *frame);
 
 #endif

@@ -12,11 +12,10 @@
 
 #include "cub3d.h"
 
-
 void	load_texture(t_frame *frame)
 {
 	t_img	img;
-	char *path[4] = {"./assets/wood.xpm", "./assets/colorstone.xpm", "./assets/redbrick.xpm", "./assets/greystone.xpm"};
+	char *path[4] = {"./assets/wood.xpm", "./assets/colorstone.xpm", "./assets/redbrick.xpm", "./assets/greystone.xpm"}; //to replace by struct later on
 	int	i;
 
 	i = 0;
@@ -36,6 +35,34 @@ void	load_texture(t_frame *frame)
 	frame->floor_color = 0x42424242;
 	frame->ceiling_color = 0x00CEEBFF;
 }
+
+void	load_sprite(t_frame *frame)
+{
+	t_img	*img;
+	char	*path[5];
+	int		i;
+
+	path[0] = "./assets/sprite/fps1.xpm";
+	path[1] = "./assets/sprite/fps2.xpm";
+	path[2] = "./assets/sprite/fps3.xpm";
+	path[3] = "./assets/sprite/fps4.xpm";
+	path[4] = "./assets/sprite/fps5.xpm";
+	i = 0;
+	while (i < 5)
+	{
+		img = &frame->sprite[i];
+		img->img = mlx_xpm_file_to_image(frame->mlx, path[i], &img->img_w, &img->img_h);
+		img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_len, &img->endian);
+		if (!img->addr)
+		{
+			printf("Asset sprite not loaded\n"); 
+			exit(EXIT_FAILURE); // to replace with error management
+		}
+		frame->sprite[i] = *img;
+		i++;
+	}
+}
+
 /**
  * Calculates the horizontal texture coordinate (textx) based on the ray's 
  * intersection with a wall.

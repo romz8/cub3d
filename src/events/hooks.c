@@ -36,6 +36,8 @@ int key_hook(int keycode, t_frame *frame)
 	return (0);
 }
 
+
+/*moving the mouse need to be in the render function */
 int mouse_event(t_frame *frame)
 {
 	int	x;
@@ -44,15 +46,29 @@ int mouse_event(t_frame *frame)
 	
 	mlx_mouse_get_pos(frame->mlx_wdw, &x, &y);
 	printf("mouse coordinate at by (x,y) = %i, %i \n", x, y);
-	
 	if (x < 0 || y < 0 || x > WIDTH || y > LENGTH)
 		return (0);
 	else
 		movement = (WIDTH / 2 ) - x;
-	if (movement < 200)
-		rotate_vector(frame, 0.05);
-	else if (movement > 200)
-		rotate_vector(frame, 0.05);
-	draw_player(frame);
+	if (movement > 100)
+		rotate_vector(frame, -0.02 * (0.5 + (float) movement / WIDTH));
+	else if (movement < -100)
+		rotate_vector(frame, 0.02 * (0.5 + (float) -1.0 * movement / WIDTH));
+	return (1);
+}
+
+int	sprite_hook(int	key_code, t_frame *frame)
+{
+	int i;
+	
+	if (key_code != 1)
+		return (0);
+	i = 1;
+	while (i < 5)
+	{
+		draw_player(frame, i);
+		i++;
+	}
+	//draw_player(frame, 0);
 	return (1);
 }

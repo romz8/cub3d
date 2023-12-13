@@ -62,10 +62,12 @@ int main(void)
 	frame.game_map = worldMap;
 	
   load_texture(&frame);
+  load_sprite(&frame);
 	mlx_mouse_move(frame.mlx_wdw, WIDTH / 2, LENGTH / 2); // centre the mouse at startup so that any move is recorded as a difference
-  draw_player(&frame);
+  //draw_player(&frame);
 	mlx_key_hook(frame.mlx_wdw, key_hook, &frame);
   mlx_hook(frame.mlx_wdw, 17, 0, close_handler, &frame);
-  //mlx_loop_hook(frame.mlx, draw_player, &frame);
+  mlx_mouse_hook(frame.mlx_wdw, sprite_hook, &frame);
+  mlx_loop_hook(frame.mlx, render, &frame);
   mlx_loop(frame.mlx);
 }

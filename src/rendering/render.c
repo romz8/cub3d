@@ -13,8 +13,7 @@
 #include "cub3d.h"
 
 void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color);
-void	render_plane(t_frame *frame);
-int		color_ray(t_ray *ray);
+void	draw_player(t_frame	*frame, int	i);
 
 void	clear_screen(t_frame *frame)
 {
@@ -35,13 +34,13 @@ void	clear_screen(t_frame *frame)
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
 }
 
-int	draw_player(t_frame *frame)
+int	render(t_frame *frame)
 {
 	clear_screen(frame);
 	raycasting(frame);
-	//mouse_event(frame);
-	//render_plane(frame);
+	mouse_event(frame);
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
+	draw_player(frame, 0);
 	return (1);
 }
 
@@ -69,4 +68,18 @@ void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, in
 		fill_pxl_mlx(&(frame->img), x, y, color);
 		y++;
 	}
+}
+
+void	draw_player(t_frame	*frame, int	i)
+{
+	if (i == 0)
+		mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[i].img, WIDTH/2, LENGTH - 115);
+	else if (i == 1)
+		mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[i].img, WIDTH/2, LENGTH - 130);
+	else if (i == 2)
+		mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[i].img, WIDTH/2, LENGTH - 130);
+	else if (i == 3)
+		mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[i].img, WIDTH/2, LENGTH - 130);
+	else if (i == 4)
+		mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[i].img, WIDTH/2, LENGTH - 130);
 }
