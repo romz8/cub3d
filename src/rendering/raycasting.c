@@ -73,6 +73,34 @@ void	ray_dist_setup(t_ray *ray, t_frame *frame)
 	}
 	//printf("in distsetp we have mapx = %i \n", ray->mapx);
 }
+
+/*
+find which coordinate is the wall exposedo. 
+If we are hitting a vertical side of the wall (side = 1)
+and we are looking up (diry < 0) , the side of the wall is 
+exposed to NORTH, otherwise SOUTH
+if we are hitting a horizontal side of the wall on the array (side = 0)
+and we are looking east (dirX > 0) this side is exposed EAST, 
+otherwise WEST
+then NORHT, SOUTH, WEST, EAST correspond to arary of saved texture.
+*/
+void	get_wall_texture(t_ray *ray)
+{
+	if (ray->side == 0)
+	{
+		if (ray->ray_dirx > 0)
+			ray->wall_type = EAST;
+		else if (ray->ray_dirx < 0)
+			ray->wall_type = WEST;
+	}
+	else if (ray->side == 1)
+	{
+		if (ray->ray_diry < 0)
+			ray->wall_type = NORTH;
+		else if (ray->ray_diry > 0)
+			ray->wall_type = SOUTH;
+	}
+}
 /*
 Implements the DDA algorithm to find the first wall hit by the ray.
 The ray's grid position (mapx, mapy) is updated until a wall is encountered.
@@ -102,8 +130,9 @@ void	dda_execute(t_ray *ray, t_frame *frame)
 			hit = 1;
 	}
 	ray->side = side;
-	ray->wall_type = frame->game_map[ray->mapy][ray->mapx];
+	get_wall_texture(ray);
 }
+
 /*
 Calculates the perpendicular distance of the wall from the player (wall_dist), 
 avoiding fisheye distortion by using Euclidien distance

@@ -56,12 +56,9 @@ void	fill_pxl_mlx(t_img *img, int x, int y, int color)
 	*(unsigned int *) dst = color;
 	return;
 }
-
-void	render_plane(t_frame *frame)
-{
-	raycasting(frame);
-}
-
+/*
+to render a wall with one colour (colour each pxl with one color)
+*/
 void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color)
 {
 	int	y;
@@ -72,19 +69,4 @@ void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, in
 		fill_pxl_mlx(&(frame->img), x, y, color);
 		y++;
 	}
-}
-
-int	color_ray(t_ray *ray)
-{
-	int color;
-
-	if (ray->wall_type == 1)
-		color = 0x1F51FFFF;
-	else
-		color = 0x32CD32FF;
-	// if (ray->wall_type == 2)
-	// 	color = 0x32CD32FF;
-	if (ray->side == 1)
-		color /= 2;
-	return (color);
 }

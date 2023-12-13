@@ -16,7 +16,7 @@
 void	load_texture(t_frame *frame)
 {
 	t_img	img;
-	char *path[4] = {"./assets/wood.xpm", "./assets/mossy.xpm", "./assets/redbrick.xpm", "./assets/greystone.xpm"};
+	char *path[4] = {"./assets/wood.xpm", "./assets/colorstone.xpm", "./assets/redbrick.xpm", "./assets/greystone.xpm"};
 	int	i;
 
 	i = 0;
@@ -87,7 +87,7 @@ int	pix_bitmap(t_frame *frame, t_ray *ray)
 	char	*pxl;
 	t_img	*img;
 
-	img = &frame->loaded_texture[ray->wall_type - 1];
+	img = &frame->loaded_texture[ray->wall_type];
 	pxl = img->addr + (ray->texty * img->line_len + ray->textx * (img->bits_per_pixel / 8));
 	return (*(int *) pxl);
 }

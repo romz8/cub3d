@@ -12,32 +12,54 @@
 
 #include "cub3d.h"
 
+void  init_player_ns(t_frame *frame, t_player *player)
+{
+	if (frame->direction == 'N')
+	{
+		player->dirx = 0;
+		player->diry = -1;
+		player->plane_x = FOV;
+		player->plane_y = 0;
+	}
+	else if (frame->direction == 'S')
+  	{
+		player->dirx = 0;
+		player->diry = 1;
+		player->plane_x = -FOV;
+		player->plane_y = 0;
+	}
+}
+
+void  init_player_ew(t_frame *frame, t_player *player)
+{
+	if(frame->direction == 'E')
+	{
+		player->dirx = 1;
+		player->diry = 0;
+		player->plane_x = 0;
+		player->plane_y = FOV;
+	}
+	else if(frame->direction == 'W')
+	{
+		player->dirx = -1;
+		player->diry = 0;
+		player->plane_x = 0;
+		player->plane_y = -FOV;
+	}
+}
+
+
 void  init_player(t_frame *frame, t_player *player)
 {
-  if (frame->direction == 'N')
-  {
-    player->dirx = 0;
-	  player->diry = -1;
-  }
-  else if (frame->direction == 'S')
-  {
-    player->dirx = 0;
-	  player->diry = 1;
-  }
-  else if(frame->direction == 'E')
-  {
-    player->dirx = 1;
-	  player->diry = 0;
-  }
-  else if(frame->direction == 'W')
-  {
-    player->dirx = -1;
-	  player->diry = 0;
-    player->plane_x = 0;
-		player->plane_y = -0.66;
-  }
-  player->plane_x = player->diry * FOV;
-  player->plane_y = -player->dirx * FOV;
+	if (frame->direction == 'N' || frame->direction == 'S')
+		init_player_ns(frame, player);
+	else if (frame->direction == 'W' || frame->direction == 'E')
+		init_player_ew(frame, player);
+	else
+	{
+		ft_putstr_fd("Error while loading direction \n", STDERR_FILENO);
+		exit(EXIT_FAILURE); //see how to handle memory later on
+	}
 }
 
 /*

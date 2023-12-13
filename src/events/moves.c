@@ -76,13 +76,13 @@ int	move(int keycode, t_frame *frame)
 	else if (keycode == ARROW_DOWN || keycode == S)
         player_move(frame, -movespeed);
 	else if (keycode == A)
-        player_side_move(frame, movespeed);
-	else if (keycode == D)
         player_side_move(frame, -movespeed);
+	else if (keycode == D)
+        player_side_move(frame, movespeed);
 	else if (keycode == ARROW_LEFT)
-        rotate_vector(frame, rotation);
-    else if (keycode == ARROW_RIGHT)
         rotate_vector(frame, -rotation);
+    else if (keycode == ARROW_RIGHT)
+        rotate_vector(frame, rotation);
 	draw_player(frame);
     return (0);
 }

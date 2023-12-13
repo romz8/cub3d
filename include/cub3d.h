@@ -33,9 +33,15 @@
 # define ARROW_DOWN 125
 # define ARROW_LEFT 123
 # define ARROW_RIGHT 124
-# define WALL_COLOR 0xC0C0C0FF
 # define FOV 0.66
 # define  BMAP_SIZE 64
+
+enum e_texture {
+  NORTH,
+  SOUTH,
+  WEST,
+  EAST
+} ;
 
 typedef struct	s_img 
 {
@@ -100,7 +106,6 @@ void	init_ray(t_ray *ray);
 int	draw_player(t_frame *frame);
 void	fill_pxl_mlx(t_img *img, int x, int y, int color);
 void	map_render(int map[mapW][mapH], t_frame *frame);
-void	draw_cube(t_frame *frame, int x_start, int y_start, int color);
 void	clear_screen(t_frame *frame);
 void  draw_line(t_img *img, int x0, int y0, int x1, int y1, int color);
 
