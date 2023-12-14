@@ -15,7 +15,7 @@
 void	load_texture(t_frame *frame)
 {
 	t_img	img;
-	char *path[4] = {"./assets/wood.xpm", "./assets/colorstone.xpm", "./assets/redbrick.xpm", "./assets/greystone.xpm"}; //to replace by struct later on
+	char *path[4] = {"./assets/wood.xpm", "./assets/eagle.xpm", "./assets/redbrick.xpm", "./assets/purplestone.xpm"}; //to replace by struct later on
 	int	i;
 
 	i = 0;
@@ -42,11 +42,11 @@ void	load_sprite(t_frame *frame)
 	char	*path[5];
 	int		i;
 
-	path[0] = "./assets/sprite/fps1.xpm";
-	path[1] = "./assets/sprite/fps2.xpm";
-	path[2] = "./assets/sprite/fps3.xpm";
-	path[3] = "./assets/sprite/fps4.xpm";
-	path[4] = "./assets/sprite/fps5.xpm";
+	path[0] = "./assets/sprite/w3dfps1.xpm";
+	path[1] = "./assets/sprite/w3dfps2.xpm";
+	path[2] = "./assets/sprite/w3dfps2.xpm";
+	path[3] = "./assets/sprite/w3dfps2.xpm";
+	path[4] = "./assets/sprite/w3dfps2.xpm";
 	i = 0;
 	while (i < 5)
 	{

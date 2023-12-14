@@ -177,7 +177,6 @@ int	raycasting(t_frame *frame)
 		ray_dist_setup(&ray, frame);
 		dda_execute(&ray, frame);
 		wall_height(&ray);
-		//render_wall_slice(frame, x, ray.w_start, ray.w_end, color_ray(&ray));
 		wall_to_texture(x, &ray, frame);
 		x++;
 	}

@@ -129,6 +129,6 @@ void	rotate_vector(t_frame *frame, double angle);
 int	  move(int keycode, t_frame *frame);
 int   mouse_event(t_frame *frame);
 void  mouse_rotate(t_frame *frame, int x);
-int   sprite_hook(int	key_code, t_frame *frame);
+int	sprite_hook(int	key_code, int x, int y, t_frame *frame);
 
 #endif

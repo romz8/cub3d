@@ -45,22 +45,23 @@ int mouse_event(t_frame *frame)
 	int	movement;
 	
 	mlx_mouse_get_pos(frame->mlx_wdw, &x, &y);
-	printf("mouse coordinate at by (x,y) = %i, %i \n", x, y);
 	if (x < 0 || y < 0 || x > WIDTH || y > LENGTH)
 		return (0);
 	else
 		movement = (WIDTH / 2 ) - x;
-	if (movement > 100)
+	if (movement > 200)
 		rotate_vector(frame, -0.02 * (0.5 + (float) movement / WIDTH));
-	else if (movement < -100)
+	else if (movement < -200)
 		rotate_vector(frame, 0.02 * (0.5 + (float) -1.0 * movement / WIDTH));
 	return (1);
 }
 
-int	sprite_hook(int	key_code, t_frame *frame)
+int	sprite_hook(int	key_code, int x, int y, t_frame *frame)
 {
 	int i;
 	
+	if (x < 0 || y < 0 || x > WIDTH || y > LENGTH)
+		return (0);
 	if (key_code != 1)
 		return (0);
 	i = 1;
@@ -69,6 +70,5 @@ int	sprite_hook(int	key_code, t_frame *frame)
 		draw_player(frame, i);
 		i++;
 	}
-	//draw_player(frame, 0);
 	return (1);
 }
