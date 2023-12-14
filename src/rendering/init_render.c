@@ -60,6 +60,14 @@ void  init_player(t_frame *frame, t_player *player)
 		ft_putstr_fd("Error while loading direction \n", STDERR_FILENO);
 		exit(EXIT_FAILURE); //see how to handle memory later on
 	}
+	player->px = 12;
+	player->py = 12;
+	player->key.up = 0;
+	player->key.down = 0;
+	player->key.left = 0;
+	player->key.right = 0;
+	player->key.rotate_l = 0;
+	player->key.rotate_r = 0;
 }
 
 /*

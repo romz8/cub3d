@@ -39,6 +39,7 @@ int	render(t_frame *frame)
 	clear_screen(frame);
 	raycasting(frame);
 	mouse_event(frame);
+	move(frame);
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
 	draw_player(frame, 0);
 	return (1);
@@ -81,8 +82,8 @@ void	draw_player(t_frame	*frame, int	i)
 		mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[i].img, WIDTH/2 - 65 + adx, LENGTH - 210);
 	else if (i == 2)
 		mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[i].img, WIDTH/2 - 65 + adx, LENGTH - 210);
-	// if (i == 0)
-	// 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[3].img, WIDTH/2 - adx, LENGTH - 175);
-	// else if (i == 4)
-	// 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[i].img, WIDTH/2 - adx, LENGTH - 175);
+	else if (i == 3)
+		mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[i].img, WIDTH/2 - 65 + adx, LENGTH - 210);
+	else if (i == 4)
+		mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->sprite[i].img, WIDTH/2 - 65 + adx, LENGTH - 210);
 }

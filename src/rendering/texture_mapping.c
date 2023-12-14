@@ -15,6 +15,7 @@
 void	load_texture(t_frame *frame)
 {
 	t_img	img;
+	//char *path[4] = {"./assets/north.xpm", "./assets/south.xpm", "./assets/weast.xpm", "./assets/east.xpm"}; //to replace by struct later on
 	char *path[4] = {"./assets/wood.xpm", "./assets/eagle.xpm", "./assets/redbrick.xpm", "./assets/purplestone.xpm"}; //to replace by struct later on
 	int	i;
 
@@ -24,7 +25,7 @@ void	load_texture(t_frame *frame)
 		img = frame->loaded_texture[i];
 		img.img = mlx_xpm_file_to_image(frame->mlx, path[i], &img.img_w, &img.img_h);
 		img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_len, &img.endian);
-		if (!img.addr)
+		if (!img.addr || !img.img_w )
 		{
 			printf("Asset image not loaded\n"); 
 			exit(EXIT_FAILURE); // to replace with error management
@@ -90,10 +91,10 @@ void	locate_textx(t_frame *frame, t_ray *ray)
 		wallx = frame->player.px+ ray->wall_dist * ray->ray_dirx;
 	wallx -= floor(wallx);
 	ray->textx = (int) (wallx * (double) BMAP_SIZE);
-	if (ray->side == 0 && ray->ray_dirx > 0)
-		ray->textx = BMAP_SIZE - ray->textx;
-	if (ray->side == 1 && ray->ray_dirx < 0)
-		ray->textx = BMAP_SIZE - ray->textx;
+	if (ray->side == 0 && ray->ray_dirx < 0)
+		ray->textx = BMAP_SIZE - ray->textx - 1;
+	if (ray->side == 1 && ray->ray_diry > 0)
+		ray->textx = BMAP_SIZE - ray->textx -1;
 }
 
 /**
@@ -152,14 +153,11 @@ void	wall_to_texture(int x, t_ray *ray, t_frame *frame)
 	y = 0;
 	while (y < ray->w_start)
 		fill_pxl_mlx(&(frame->img), x, y++, frame->ceiling_color);
-	y = ray->w_start;
 	while (y < ray->w_end)
 	{
 		ray->texty = (int) text_pos & (BMAP_SIZE - 1);
 		text_pos += step;
 		color = pix_bitmap(frame, ray);
-		if (ray->side == 1)
-			 color = (color >> 1) & 8355711;
 		fill_pxl_mlx(&(frame->img), x, y, color);
 		y++;
 	}

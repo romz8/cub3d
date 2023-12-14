@@ -66,22 +66,22 @@ void	rotate_vector(t_frame *frame, double angle)
 	player->plane_y = old_planex * sin(angle) + player->plane_y * cos(angle);
 }
 
-int	move(int keycode, t_frame *frame)
+int	move(t_frame *frame)
 {
-   double movespeed = 0.5;
-   double rotation = 0.05;
+   double movespeed = 0.05;
+   double rotation = 0.02;
 
-	if (keycode == ARROW_UP || keycode == W)
+	if (frame->player.key.up == 1)
    		player_move(frame, movespeed);
-	else if (keycode == ARROW_DOWN || keycode == S)
+	else if (frame->player.key.down == 1)
         player_move(frame, -movespeed);
-	else if (keycode == A)
+	if (frame->player.key.left == 1)
         player_side_move(frame, -movespeed);
-	else if (keycode == D)
+	else if (frame->player.key.right == 1)
         player_side_move(frame, movespeed);
-	else if (keycode == ARROW_LEFT)
+	if (frame->player.key.rotate_l == 1)
         rotate_vector(frame, -rotation);
-    else if (keycode == ARROW_RIGHT)
+    else if (frame->player.key.rotate_r == 1)
         rotate_vector(frame, rotation);
     return (0);
 }

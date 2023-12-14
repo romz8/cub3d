@@ -54,14 +54,27 @@ typedef struct	s_img
   int   img_h;
 }	t_img;
 
-typedef struct player {
+typedef struct s_keys
+{
+  int up;
+  int down;
+  int left;
+  int right;
+  int rotate_l;
+  int rotate_r;
+} t_keys;
+
+typedef struct player 
+{
 	double	px;
 	double	py;
   double  dirx;
   double  diry;
   double  plane_x;
   double  plane_y;
+  t_keys  key;
 }	t_player;
+
 
 typedef struct s_frame {
 	void	*mlx;
@@ -123,10 +136,11 @@ void  load_sprite(t_frame *frame);
 /*========= Events handlers =============================*/
 int		esc_hook(int keycode, t_frame *frame);
 int   close_handler(t_frame *frame);
-int   key_hook(int keycode, t_frame *frame);
+int   key_hook_press(int keycode, t_frame *frame);
+int key_hook_release(int keycode, t_frame *frame);
 void	player_move(t_frame *frame, float movespeed);
 void	rotate_vector(t_frame *frame, double angle);
-int	  move(int keycode, t_frame *frame);
+int   move(t_frame *frame);
 int   mouse_event(t_frame *frame);
 void  mouse_rotate(t_frame *frame, int x);
 int	sprite_hook(int	key_code, int x, int y, t_frame *frame);

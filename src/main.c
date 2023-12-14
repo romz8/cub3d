@@ -40,6 +40,21 @@
   {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2}
 };
 
+void  print_showoff(void)
+{
+  // Print the CUB3D logo
+  ft_putstr_fd("   ____   _      _   ___    ___ \n", STDOUT_FILENO);
+  ft_putstr_fd(" / ___| | |    | | |___) ) |___\n", STDOUT_FILENO);
+  ft_putstr_fd("| |     | |    | |  ___     __|\n", STDOUT_FILENO);
+  ft_putstr_fd("| |___  | | _ _| | | ___)  |____ \n", STDOUT_FILENO);
+  ft_putstr_fd(" \\____/ |__ __ __| ____________| \n", STDOUT_FILENO);
+
+    // Print controls
+    ft_putstr_fd("\nControls:\n", STDOUT_FILENO);
+    ft_putstr_fd("WASD + Up/Down: Move\n", STDOUT_FILENO);
+    ft_putstr_fd("Left/Right Arrows: Rotate\n", STDOUT_FILENO);
+    ft_putstr_fd("Press 'q' to quit\n",STDOUT_FILENO);
+}
 
 int main(void)
 {
@@ -47,24 +62,21 @@ int main(void)
 	t_img	img;
 	t_player player;
 	
-
+  print_showoff();
 	frame.mlx = mlx_init();
 	frame.mlx_wdw = mlx_new_window(frame.mlx, WIDTH, LENGTH, "Cub3D");
 	img.img = mlx_new_image(frame.mlx, WIDTH, LENGTH);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_len, &img.endian);
 	frame.img = img;
-	
-	player.px = 12;
-	player.py = 12;
   frame.direction = 'E';
   init_player(&frame, &player);
   frame.player = player;
 	frame.game_map = worldMap;
-	
   load_texture(&frame);
   load_sprite(&frame);
-	mlx_mouse_move(frame.mlx_wdw, WIDTH / 2, LENGTH / 2); // centre the mouse at startup so that any move is recorded as a difference
-	mlx_key_hook(frame.mlx_wdw, key_hook, &frame);
+	mlx_mouse_move(frame.mlx_wdw, WIDTH / 2, LENGTH / 2);
+	mlx_hook(frame.mlx_wdw, 2, 1L<<0, key_hook_press, &frame);
+  mlx_hook(frame.mlx_wdw, 3, 1L<<0, key_hook_release, &frame);
   mlx_hook(frame.mlx_wdw, 17, 0, close_handler, &frame);
   mlx_mouse_hook(frame.mlx_wdw, sprite_hook, &frame);
   mlx_loop_hook(frame.mlx, render, &frame);

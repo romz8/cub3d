@@ -27,15 +27,40 @@ int	close_handler(t_frame *frame)
 	mlx_destroy_window(frame->mlx, frame->mlx_wdw);
 	exit (0);
 }
-int key_hook(int keycode, t_frame *frame)
+int key_hook_press(int keycode, t_frame *frame)
 {
 	if (keycode == 53)
 		esc_hook(keycode, frame);
-	else
-		move(keycode, frame);
+	else if (keycode == ARROW_UP || keycode == W)
+   		frame->player.key.up = 1;
+	else if (keycode == ARROW_DOWN || keycode == S)
+		frame->player.key.down = 1;
+	else if (keycode == A)
+        frame->player.key.left = 1;
+	else if (keycode == D)
+        frame->player.key.right = 1;
+	else if (keycode == ARROW_LEFT)
+        frame->player.key.rotate_l = 1;
+    else if (keycode == ARROW_RIGHT)
+        frame->player.key.rotate_r = 1;
 	return (0);
 }
-
+int key_hook_release(int keycode, t_frame *frame)
+{
+	if (keycode == ARROW_UP || keycode == W)
+   		frame->player.key.up = 0;
+	else if (keycode == ARROW_DOWN || keycode == S)
+		frame->player.key.down = 0;
+	else if (keycode == A)
+        frame->player.key.left = 0;
+	else if (keycode == D)
+        frame->player.key.right = 0;
+	else if (keycode == ARROW_LEFT)
+        frame->player.key.rotate_l = 0;
+    else if (keycode == ARROW_RIGHT)
+        frame->player.key.rotate_r = 0;
+	return (0);
+}
 
 /*moving the mouse need to be in the render function */
 int mouse_event(t_frame *frame)
