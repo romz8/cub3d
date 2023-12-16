@@ -68,8 +68,8 @@ void  build_game(t_frame *frame, t_img *img, t_player *player, t_map *map)
 	frame->game_map = map->map_2d;
   frame->map_w = map->max_width;
   frame->map_h = map->max_height;
-  frame->floor_color = 0x42424242;
-	frame->ceiling_color = 0x00CEEBFF;
+  frame->floor_color = create_hex_trgb(0, map->color_f[0], map->color_f[1], map->color_f[2]);
+	frame->ceiling_color = create_hex_trgb(0, map->color_c[0], map->color_c[1], map->color_c[2]);
 }
 int main(int argc, char **argv)
 {

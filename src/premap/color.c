@@ -12,41 +12,50 @@
 
 #include "cub3d.h"
 
-t_map_color	*init_color(void)
-{
-	t_map_color	*color;
+// t_map_color	*init_color(void)
+// {
+// 	t_map_color	*color;
 
-	color = malloc(sizeof(t_map_color));
-	if (!color)
-	{
-		fprintf(stderr, "Error: Unable to allocate memory for t_map_color\n");
-		exit(EXIT_FAILURE);
-	}
-	color->floor_color = malloc(sizeof(t_color));
-	color->ceil_color = malloc(sizeof(t_color));
-	if (!color->floor_color || !color->ceil_color)
-	{
-		fprintf(stderr, "Error: Unable to allocate memory for t_color within t_map_color\n");
-		exit(EXIT_FAILURE);
-	}
-	color->floor_color->r = 0;
-	color->floor_color->g = 0;
-	color->floor_color->b = 0;
-	color->ceil_color->r = 0;
-	color->ceil_color->g = 0;
-	color->ceil_color->b = 0;
-	return (color);
-}
+// 	color = malloc(sizeof(t_map_color));
+// 	if (!color)
+// 	{
+// 		fprintf(stderr, "Error: Unable to allocate memory for t_map_color\n");
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	color->floor_color = malloc(sizeof(t_color));
+// 	color->ceil_color = malloc(sizeof(t_color));
+// 	if (!color->floor_color || !color->ceil_color)
+// 	{
+// 		fprintf(stderr, "Error: Unable to allocate memory for t_color within t_map_color\n");
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	color->floor_color->r = 0;
+// 	color->floor_color->g = 0;
+// 	color->floor_color->b = 0;
+// 	color->ceil_color->r = 0;
+// 	color->ceil_color->g = 0;
+// 	color->ceil_color->b = 0;
+// 	return (color);
+// }
 
 /*****
  * splitea la cadena con los char numeros por las comas.
  * hace un atoi y lo coloca en la estructura
  **** */
-void	get_color_floor(t_map_color *color, t_textures *texture)
+
+void	free_split(char **split)
 {
-	char	*r;
-	char	*g;
-	char	*b;
+	int	i;
+
+	i = 0;
+	while (split[i])
+		free(split[i++]);
+	free(split);
+}
+
+void	get_color_floor(t_map *map, t_textures *texture)
+{
+	char	*rgb[3];
 	char	**char_numbers;
 	int		num_elements;
 
@@ -56,29 +65,26 @@ void	get_color_floor(t_map_color *color, t_textures *texture)
 		num_elements++;
 	if (num_elements == 3)
 	{
-		r = char_numbers[0];
-		g = char_numbers[1];
-		b = char_numbers[2];
-		if (is_numeric(r) && is_numeric(g) && is_numeric(b))
+		rgb[0] = char_numbers[0];
+		rgb[1] = char_numbers[1];
+		rgb[2] = char_numbers[2];
+		if (is_numeric(rgb[0]) && is_numeric(rgb[1]) && is_numeric(rgb[2]))
 		{
-			color->floor_color->r = ft_atoi(r);
-			color->floor_color->g = ft_atoi(g);
-			color->floor_color->b = ft_atoi(b);
+			map->color_f[0] = ft_atoi(rgb[0]);
+			map->color_f[1] = ft_atoi(rgb[1]);
+			map->color_f[2] = ft_atoi(rgb[2]);
 		}
 		else
 			ft_write_error("Error\nBad color numbers\n");
-		color->floor_color->hex = create_hex_color(ft_atoi(r), ft_atoi(g), ft_atoi(b));
-		printf("Hex color floor: 0x%X\n", color->floor_color->hex);
 	}
 	else
 		ft_write_error("Error\nBad color numbers\n");
+	free_split(char_numbers); // SHOULD IT NOT BE FREED ?
 }
 
-void	get_color_ceil(t_map_color *color, t_textures *texture)
+void	get_color_ceil(t_map *map, t_textures *texture)
 {
-	char	*r;
-	char	*g;
-	char	*b;
+	char	*rgb[3];
 	char	**char_numbers;
 	int		num_elements;
 
@@ -88,40 +94,39 @@ void	get_color_ceil(t_map_color *color, t_textures *texture)
 		num_elements++;
 	if (num_elements == 3)
 	{
-		r = char_numbers[0];
-		g = char_numbers[1];
-		b = char_numbers[2];
-		if (is_numeric(r) && is_numeric(g) && is_numeric(b))
+		rgb[0] = char_numbers[0];
+		rgb[1] = char_numbers[1];
+		rgb[2] = char_numbers[2];
+		if (is_numeric(rgb[0]) && is_numeric(rgb[1]) && is_numeric(rgb[2]))
 		{
-			color->ceil_color->r = ft_atoi(r);
-			color->ceil_color->g = ft_atoi(g);
-			color->ceil_color->b = ft_atoi(b);
+			map->color_c[0] = ft_atoi(rgb[0]);
+			map->color_c[1] = ft_atoi(rgb[1]);
+			map->color_c[2] = ft_atoi(rgb[2]);
 		}
 		else
-			ft_write_error("Error\nBad color arguments\n");
-		color->ceil_color->hex = create_hex_color(ft_atoi(r), ft_atoi(g), ft_atoi(b));
-		printf("Hex color ceil: 0x%X\n", color->ceil_color->hex);
+			ft_write_error("Error\nBad color numbers\n");
 	}
+	else
+		ft_write_error("Error\nBad color numbers\n");
+	free(char_numbers); // SHOULD IT NOT BE FREED ?
 }
 
-void	ft_check_color(t_map_color *color)
+void	ft_check_color(t_map *map)
 {
-	if (color->ceil_color->r < 0 || color->ceil_color->g < 0 ||
-		color->ceil_color->b < 0 || color->ceil_color->r > 255 ||
-		color->ceil_color->g > 255 || color->ceil_color->b > 255 ||
-		color->floor_color->r < 0 || color->floor_color->g < 0 ||
-		color->floor_color->b < 0 || color->floor_color->r > 255 ||
-		color->floor_color->g > 255 || color->floor_color->b > 255)
+	if (map->color_c[0]< 0 || map->color_c[1] < 0 ||
+		map->color_c[2] < 0 || map->color_c[0] > 255 ||
+		map->color_c[1] > 255 || map->color_c[2] > 255 ||
+		map->color_f[0] < 0 || map->color_f[1] < 0 ||
+		map->color_f[2] < 0 || map->color_f[0] > 255 ||
+		map->color_f[1] > 255 || map->color_f[2] > 255)
 		ft_write_error("Error\nBad color number\n");
 }
 
-unsigned int	create_hex_color(int r, int g, int b)
+/*
+convert TRGB to HEX using bitshift as 0xTTRRGGBB = (T, R, G, B)
+*/
+int	create_hex_trgb(int t, int r, int g, int b)
 {
-	printf("R: %i  G: %i  B: %i\n", r, g, b);
-	return (
-		((r & 0xff) << 16) +
-		((g & 0xff) << 8) +
-		(b & 0xff) 
-	);
+	return (t << 24 | r << 16 | g << 8 | b);
 }
 

@@ -56,12 +56,10 @@ void 	ft_check_parameters(int argc, char **argv)
 t_map *ft_start_map(char **argv)
 {
 	t_map	*map;
-	t_map_color *color;
 	t_textures *texture;
 	
 	map	= init_map();
 	texture = init_textures();
-	color = init_color();
 	ft_read_map(argv, map);
 	create_2d(map);
 //	print_filled_map(map);
@@ -79,10 +77,8 @@ t_map *ft_start_map(char **argv)
 //    printf("East: %s\n", texture->paths->east);
 //    printf("Floor: %s\n", texture->paths->floor);
 //    printf("Ceil: %s\n", texture->paths->ceil);
-	get_color_floor(color, texture);
-	get_color_ceil(color, texture);
-	ft_check_color(color);
-	map->color_c = color->ceil_color;
-	map->color_f = color->floor_color;
+	get_color_floor(map, texture);
+	get_color_ceil(map, texture);
+	ft_check_color(map);
 	return(map);
 }

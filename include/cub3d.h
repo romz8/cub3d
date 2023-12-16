@@ -119,19 +119,6 @@ typedef struct s_ray{
 } t_ray;
 
 /*======== frank header ======================*/
-typedef struct s_color
-{
-	int				r;
-	int				g;
-	int				b;
-	unsigned int	hex;
-}	t_color;
-
-typedef struct s_map_color
-{
-	t_color			*floor_color;
-	t_color 		*ceil_color;
-}	t_map_color;
 
 typedef struct s_map
 {
@@ -211,11 +198,10 @@ int	sprite_hook(int	key_code, int x, int y, t_frame *frame);
 /*===== FRANK REUNITE ====================== */
 
 //color.
-t_map_color	*init_color(void);
-void    		get_color_floor(t_map_color *color, t_textures *texture);
-void			get_color_ceil(t_map_color *color, t_textures *texture);
-void		    ft_check_color(t_map_color *color);
-unsigned int    create_hex_color(int r, int g, int b);
+void	get_color_floor(t_map *map, t_textures *texture);
+void	get_color_ceil(t_map *map, t_textures *texture);
+void	        ft_check_color(t_map *map);
+int	create_hex_trgb(int t, int r, int g, int b);
 
 //aux_color.c
 bool    is_numeric(const char *str);
@@ -244,24 +230,9 @@ void    print_filled_map(t_map *map);
 // aux_maps.c
 // // Funciones de libft y el write error con mensaje
 void	ft_write_error(char *message);
-// char 	*ft_strncpy(char *dest, const char *src, size_t n);
-// char    *ft_strdup(const char *s1);
-// char    *ft_strjoin(char const *s1, char const *s2);
-
-// aux_maps2.c
 void	ft_write(char *message);
 bool    ft_strcmp(char *s1, char *s2);
-// char    *ft_strtrim(char const *s1, char const *set);
-// size_t  ft_strlcpy(char *dst, const char *src, size_t dstsize);
-// void    *ft_memmove(void *dst, const void *src, size_t len);
-
-//aux_maps3.c
 bool    ft_check_comas(char *input);
-// void    ft_bzero(void *str, size_t n);
-// void    *ft_calloc(size_t count, size_t size);
-// void    *ft_memcpy(void *dst, const void *src, size_t n);
-// char    *ft_substr(char const *s, unsigned int start, size_t len);
-
 
 // check_lines.c
 	// Funciones para asegurar que la linea es de mapa y ver que linea es la mas ancha
