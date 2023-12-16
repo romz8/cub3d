@@ -33,8 +33,6 @@ void	load_texture(t_frame *frame)
 		frame->loaded_texture[i] = img;
 		i++;
 	}
-	frame->floor_color = 0x42424242;
-	frame->ceiling_color = 0x00CEEBFF;
 }
 
 void	load_sprite(t_frame *frame)

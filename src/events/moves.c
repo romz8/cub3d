@@ -21,11 +21,11 @@ void	player_move(t_frame *frame, float movespeed)
 	player = &(frame->player);
 	new_posx = player->px + player->dirx * movespeed;
 	new_posy = player->py + player->diry * movespeed;
-	if (new_posx < 0 || new_posx > mapW)
+	if (new_posx < 0 || new_posx > frame->map_w)
 		return;
-	if (new_posy < 0 || new_posy > mapH)
+	if (new_posy < 0 || new_posy > frame->map_h)
 		return;
-	if(frame->game_map[(int) new_posy][ (int) new_posx] != 0)
+	if(frame->game_map[(int) new_posy][ (int) new_posx] != '0')
 		return;
 	player->px = new_posx;
 	player->py = new_posy;
@@ -40,11 +40,11 @@ void	player_side_move(t_frame *frame, float movespeed)
 	player = &(frame->player);
 	new_posx = player->px - player->diry * movespeed;
 	new_posy = player->py + player->dirx * movespeed;
-	if (new_posx < 0 || new_posx > mapW)
+	if (new_posx < 0 || new_posx > frame->map_w)
 		return;
-	if (new_posy < 0 || new_posy > mapH)
+	if (new_posy < 0 || new_posy > frame->map_h)
 		return;
-	if(frame->game_map[(int) new_posy][ (int) new_posx] != 0)
+	if(frame->game_map[(int) new_posy][ (int) new_posx] != '0')
 		return;
 	player->px = new_posx;
 	player->py = new_posy;

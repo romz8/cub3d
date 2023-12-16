@@ -126,7 +126,7 @@ void	dda_execute(t_ray *ray, t_frame *frame)
 			ray->mapy += ray->stepy;
 			side = 1;
 		}
-		if (frame->game_map[ray->mapy][ray->mapx] > 0)
+		if (frame->game_map[ray->mapy][ray->mapx] != '0')
 			hit = 1;
 	}
 	ray->side = side;

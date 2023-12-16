@@ -49,8 +49,11 @@ void  init_player_ew(t_frame *frame, t_player *player)
 }
 
 
-void  init_player(t_frame *frame, t_player *player)
+void  init_player(t_frame *frame, t_player *player, t_map *map)
 {
+	if (!map)
+		return;
+	frame->direction = map->p_direction;
 	if (frame->direction == 'N' || frame->direction == 'S')
 		init_player_ns(frame, player);
 	else if (frame->direction == 'W' || frame->direction == 'E')
@@ -60,8 +63,8 @@ void  init_player(t_frame *frame, t_player *player)
 		ft_putstr_fd("Error while loading direction \n", STDERR_FILENO);
 		exit(EXIT_FAILURE); //see how to handle memory later on
 	}
-	player->px = 12;
-	player->py = 12;
+	player->px = map->p_pos[0];
+	player->py = map->p_pos[1];
 	player->key.up = 0;
 	player->key.down = 0;
 	player->key.left = 0;

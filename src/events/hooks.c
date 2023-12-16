@@ -48,7 +48,7 @@ int key_hook_press(int keycode, t_frame *frame)
 int key_hook_release(int keycode, t_frame *frame)
 {
 	if (keycode == ARROW_UP || keycode == W)
-   		frame->player.key.up = 0;
+		frame->player.key.up = 0;
 	else if (keycode == ARROW_DOWN || keycode == S)
 		frame->player.key.down = 0;
 	else if (keycode == A)
