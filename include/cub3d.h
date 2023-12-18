@@ -92,6 +92,8 @@ typedef struct s_frame {
   int   map_h;
   t_img loaded_texture[4];
   t_img sprite[5];
+  bool  load_scss[4];
+  int   bckup_clr[4];
   int   ceiling_color;
   int   floor_color;
 }	t_frame;

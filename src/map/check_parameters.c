@@ -65,7 +65,7 @@ t_map *ft_start_map(char **argv)
 //	print_filled_map(map);
 	copy_line_to_map(map);
 	get_player(map);
-	printf("IN START_MAP : NO SF HERE \n");
+	//printf("IN START_MAP : NO SF HERE \n");
 //	print_filled_map(map);
 	ft_read_textures(argv, texture);
     // Procesar y mostrar información de texturas

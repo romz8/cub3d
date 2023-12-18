@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
+void	load_bckup_wall(t_frame *frame);
 void	load_texture(t_frame *frame)
 {
 	t_img	img;
@@ -19,20 +19,34 @@ void	load_texture(t_frame *frame)
 	char *path[4] = {"./assets/wood.xpm", "./assets/eagle.xpm", "./assets/redbrick.xpm", "./assets/purplestone.xpm"}; //to replace by struct later on
 	int	i;
 
+	load_bckup_wall(frame);
 	i = 0;
 	while (i < 4)
 	{
 		img = frame->loaded_texture[i];
 		img.img = mlx_xpm_file_to_image(frame->mlx, path[i], &img.img_w, &img.img_h);
 		img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_len, &img.endian);
-		if (!img.addr || !img.img_w )
+		if (!img.addr || !img.img_w || !img.img_h || img.img_h != BMAP_SIZE \
+		|| img.img_w != BMAP_SIZE)
 		{
-			printf("Asset image not loaded\n"); 
-			exit(EXIT_FAILURE); // to replace with error management
+			printf("Asset image not loaded, replaced by wall backup\n");
+			frame->load_scss[i] = 0;
 		}
-		frame->loaded_texture[i] = img;
+		else
+		{
+			frame->loaded_texture[i] = img;
+			frame->load_scss[i] = 1;
+		}
 		i++;
 	}
+}
+
+void	load_bckup_wall(t_frame *frame)
+{
+	frame->bckup_clr[0] = 0x00FF0000;
+	frame->bckup_clr[1] = 0x0000FF00;
+	frame->bckup_clr[2] = 0x000000FF;
+	frame->bckup_clr[3] = 0x00FF00FF;
 }
 
 void	load_sprite(t_frame *frame)
@@ -113,9 +127,14 @@ int	pix_bitmap(t_frame *frame, t_ray *ray)
 	char	*pxl;
 	t_img	*img;
 
-	img = &frame->loaded_texture[ray->wall_type];
-	pxl = img->addr + (ray->texty * img->line_len + ray->textx * (img->bits_per_pixel / 8));
-	return (*(int *) pxl);
+	if (frame->load_scss[ray->wall_type] == 1)
+	{
+		img = &frame->loaded_texture[ray->wall_type];
+		pxl = img->addr + (ray->texty * img->line_len + ray->textx * (img->bits_per_pixel / 8));
+		return (*(int *) pxl);
+	}
+	else
+		return (frame->bckup_clr[ray->wall_type]);
 }
 
 /**
