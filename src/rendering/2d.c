@@ -33,17 +33,17 @@ void draw_line(t_img *img, int x0, int y0, int x1, int y1, int color) {
     }
 }
 
-void	map_render(int map[mapW][mapH], t_frame *frame)
+void	map_render(char **map, t_frame *frame)
 {
 	int i;
 	int	j;
 
 	clear_screen(frame);
 	i = 0;
-	while (i < mapW)
+	while (i < frame->map_w)
 	{
 		j = 0;
-		while (j < mapH)
+		while (j < frame->map_h)
 		{
 			if (map[j][i] != 0)
 				draw_cube(frame, i * frame->map_scale, j * frame->map_scale, 0xFF00FFFF);
