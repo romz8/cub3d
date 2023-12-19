@@ -86,7 +86,7 @@ typedef struct s_frame {
 	t_img	img;
 	t_player	player;
   char  direction;
-  int   map_scale;
+  float  map_scale;
   char  **game_map;
   int   map_w;
   int   map_h;
@@ -171,11 +171,11 @@ void	init_ray(t_ray *ray);
 
 /*====== rendering functions ================================*/
 int   render(t_frame *frame);
-//int	  draw_player(t_frame *frame);
+void	draw_coord(t_frame *frame);
+void	mini_map(t_frame *frame);
 void	fill_pxl_mlx(t_img *img, int x, int y, int color);
 // void	map_render(int map[mapW][mapH], t_frame *frame);
 void	clear_screen(t_frame *frame);
-void  draw_line(t_img *img, int x0, int y0, int x1, int y1, int color);
 void	draw_player(t_frame	*frame, int	i);
 
 /*======= Raycasting Engine ==================================*/

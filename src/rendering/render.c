@@ -15,32 +15,13 @@
 void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color);
 void	draw_player(t_frame	*frame, int	i);
 
-void	clear_screen(t_frame *frame)
-{
-	int x;
-	int	y;
-
-	x = 0;
-	while (x < WIDTH)
-	{
-		y = 0;
-		while (y < LENGTH)
-		{
-			fill_pxl_mlx(&(frame->img), x, y, 0x00000000);
-			y++;
-		}
-		x++;
-	}
-	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
-}
-
 int	render(t_frame *frame)
 { 
-	//clear_screen(frame);
 	raycasting(frame);
 	mouse_event(frame);
 	move(frame);
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
+	mini_map(frame);
 	draw_player(frame, 0);
 	return (1);
 }
