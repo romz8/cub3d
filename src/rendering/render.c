@@ -36,7 +36,7 @@ void	clear_screen(t_frame *frame)
 
 int	render(t_frame *frame)
 { 
-	clear_screen(frame);
+	//clear_screen(frame);
 	raycasting(frame);
 	mouse_event(frame);
 	move(frame);

@@ -134,6 +134,7 @@ typedef struct s_map
   int		p_pos[2];
   int color_f[3];
   int color_c[3];
+  char *texture[4];
 }	t_map;
 
 typedef enum {
@@ -180,9 +181,9 @@ void	draw_player(t_frame	*frame, int	i);
 /*======= Raycasting Engine ==================================*/
 int   raycasting(t_frame *frame);
 void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color);
-int	color_ray(t_ray *ray);
+int	  color_ray(t_ray *ray);
 void	wall_to_texture(int x, t_ray *ray, t_frame *frame);
-void	load_texture(t_frame *frame);
+void	load_texture(t_frame *frame, t_map *map);
 void  load_sprite(t_frame *frame);
 
 /*========= Events handlers =============================*/

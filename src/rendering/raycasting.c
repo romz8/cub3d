@@ -40,8 +40,6 @@ void	setup_ray(t_ray *ray, t_frame *frame, int x)
 		ray->delta_disty =1e30;
 	else
 		ray->delta_disty = fabs(1 / ray->ray_diry);
-	//printf("we have a player with px, py = %f, %f and planex, planey = %f. %f and dirx, diry = %f, %f", frame->player.px, frame->player.py, frame->player.plane_x, frame->player.plane_y, frame->player.dirx, frame->player.diry);
-	//printf("mapx,mapy= %i, %i dirx, diry = %f, %f deltax, deltay= %f, %f \n", ray->mapx, ray->mapy, ray->ray_dirx, ray->ray_diry, ray->delta_distx, ray->delta_disty);
 }
 /*
 Determines the step direction (stepx, stepy) and initial side distances
@@ -71,7 +69,6 @@ void	ray_dist_setup(t_ray *ray, t_frame *frame)
 		ray->stepy = 1;
 		ray->side_disty = (ray->mapy + 1.0 - frame->player.py) * ray->delta_disty;
 	}
-	//printf("in distsetp we have mapx = %i \n", ray->mapx);
 }
 
 /*
@@ -180,6 +177,5 @@ int	raycasting(t_frame *frame)
 		wall_to_texture(x, &ray, frame);
 		x++;
 	}
-	//printf("player position is px,py = %f, %f and mapx, mapy = %i, %i\n", frame->player.px, frame->player.py, ray.mapx, ray.mapy);
 	return (1);
 }
