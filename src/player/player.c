@@ -56,6 +56,7 @@ void	get_player_direction(t_map *map, int y, int x)
 //	print_filled_map(map);
 	if (!check_map(map))
 		ft_write_error("Error\nThe map is not closed or are spaces inside\n");
+	printf("player position is x,y = %i, %i\n", x, y);
 }
 
 bool	is_space_around(t_map *map, int y, int x)

@@ -1,14 +1,7 @@
-NO assets/bluestone.xpm
-SO assets/redbrick.xpm
-WE assets/eagle.xpm
-EA assets/mossy.xpm
-
-
-
-
-
-
-
+NO assets/eagle.xpm
+SO assets/bluestone.xpm
+WE assets/wood.xpm
+EA assets/greystone.xpm
 
 F 66,66,66
 C 206,235,255

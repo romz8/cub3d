@@ -20,10 +20,10 @@ GRAPH_LINKING = -L. -lmlx -framework OpenGL -framework Appkit
 
 SRC = main.c events/hooks.c events/moves.c rendering/raycasting.c \
  rendering/render.c rendering/2d.c rendering/texture_mapping.c \
- rendering/init_render.c player/player.c map/aux_maps.c map/check_lines.c \
- map/check_parameters.c map/get_next_line.c map/map.c map/read_map.c \
-premap/aux_color.c premap/color.c premap/init_textures.c premap/read_textures.c \
- premap/read_textures2.c
+ rendering/init_render.c rendering/load_assets.c player/player.c map/aux_maps.c \
+ map/check_lines.c map/check_parameters.c map/get_next_line.c map/map.c \
+ map/read_map.c premap/aux_color.c premap/color.c premap/init_textures.c \
+ premap/read_textures.c premap/read_textures2.c
 
 OBJS_DIR = ./objs/
 SRC_PATH = src/
