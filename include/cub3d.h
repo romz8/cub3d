@@ -174,7 +174,6 @@ int   render(t_frame *frame);
 void	draw_coord(t_frame *frame);
 void	mini_map(t_frame *frame);
 void	fill_pxl_mlx(t_img *img, int x, int y, int color);
-// void	map_render(int map[mapW][mapH], t_frame *frame);
 void	clear_screen(t_frame *frame);
 void	draw_player(t_frame	*frame, int	i);
 
@@ -182,6 +181,7 @@ void	draw_player(t_frame	*frame, int	i);
 int   raycasting(t_frame *frame);
 void	render_wall_slice(t_frame *frame, int x, int slice_start, int slice_end, int color);
 int	  color_ray(t_ray *ray);
+void	get_wall_texture(t_ray *ray);
 void	wall_to_texture(int x, t_ray *ray, t_frame *frame);
 void	load_texture(t_frame *frame, t_map *map);
 void  load_sprite(t_frame *frame);

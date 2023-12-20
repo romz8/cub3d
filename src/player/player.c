@@ -54,8 +54,8 @@ void	get_player_direction(t_map *map, int y, int x)
 	//printf("player position--  x = %lf-- y = %lf--\nPlayer direction = x = %lf-- y = %lf--", player->px, player->py, player->dirx, player->diry);
 	map->map_2d[y][x] = '0';
 //	print_filled_map(map);
-	if (!check_map(map))
-		ft_write_error("Error\nThe map is not closed or are spaces inside\n");
+	// if (!check_map(map))
+	// 	ft_write_error("Error\nThe map is not closed or are spaces inside\n");
 	printf("player position is x,y = %i, %i\n", x, y);
 }
 

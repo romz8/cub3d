@@ -12,7 +12,12 @@
 
 #include "cub3d.h"
 
-void  init_player_ns(t_frame *frame, t_player *player)
+/*
+init player direction verctor based on map setup. if palyer is facing North,
+it is looking up (diry -1) and the plane should be perpendicular so the vector
+dot product is zero. Opposite case for looking south
+*/
+void	init_player_ns(t_frame *frame, t_player *player)
 {
 	if (frame->direction == 'N')
 	{
@@ -22,7 +27,7 @@ void  init_player_ns(t_frame *frame, t_player *player)
 		player->plane_y = 0;
 	}
 	else if (frame->direction == 'S')
-  	{
+	{
 		player->dirx = 0;
 		player->diry = 1;
 		player->plane_x = -FOV;
@@ -30,16 +35,19 @@ void  init_player_ns(t_frame *frame, t_player *player)
 	}
 }
 
-void  init_player_ew(t_frame *frame, t_player *player)
+/*
+similar to init_north_south but the logic is on axis-x for East-West
+*/
+void	init_player_ew(t_frame *frame, t_player *player)
 {
-	if(frame->direction == 'E')
+	if (frame->direction == 'E')
 	{
 		player->dirx = 1;
 		player->diry = 0;
 		player->plane_x = 0;
 		player->plane_y = FOV;
 	}
-	else if(frame->direction == 'W')
+	else if (frame->direction == 'W')
 	{
 		player->dirx = -1;
 		player->diry = 0;
@@ -48,11 +56,14 @@ void  init_player_ew(t_frame *frame, t_player *player)
 	}
 }
 
-
-void  init_player(t_frame *frame, t_player *player, t_map *map)
+/*
+initiliaze player based on position and direction of where it's looking
+then set all key press commands to 0
+*/
+void	init_player(t_frame *frame, t_player *player, t_map *map)
 {
 	if (!map)
-		return;
+		return ;
 	frame->direction = map->p_direction;
 	if (frame->direction == 'N' || frame->direction == 'S')
 		init_player_ns(frame, player);

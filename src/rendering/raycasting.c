@@ -20,11 +20,12 @@ to 1, based on the screen width.
 ray_dirx and ray_diry are the direction vectors of the ray, computed using 
 the player's direction and the camera plane's x coordinates.
 delta_distx and delta_disty represent the distance the ray has to travel 
-to cross one x or y grid cell, calculated as the reciprocal of ray_dirx and ray_diry.
+to cross one x or y grid cell, calculated as the reciprocal of ray_dirx 
+and ray_diry.
 */
 void	setup_ray(t_ray *ray, t_frame *frame, int x)
 {
-	t_player *player;
+	t_player	*player;
 
 	player = &frame->player;
 	ray->mapx = (int) player->px;
@@ -33,71 +34,45 @@ void	setup_ray(t_ray *ray, t_frame *frame, int x)
 	ray->ray_dirx = player->dirx + player->plane_x * ray->camera_x;
 	ray->ray_diry = player->diry + player->plane_y * ray->camera_x;
 	if (ray->ray_dirx == 0)
-		ray->delta_distx =1e30;
+		ray->delta_distx = 1e30;
 	else
 		ray->delta_distx = fabs(1 / ray->ray_dirx);
 	if (ray->ray_diry == 0)
-		ray->delta_disty =1e30;
+		ray->delta_disty = 1e30;
 	else
 		ray->delta_disty = fabs(1 / ray->ray_diry);
 }
+
 /*
 Determines the step direction (stepx, stepy) and initial side distances
 (side_distx, side_disty) for the ray.
 This setup is used in the Digital Differential Analysis (DDA) algorithm
 for grid traversal.
 */
-void	ray_dist_setup(t_ray *ray, t_frame *frame)
+void	ray_dist_setup(t_ray *ray, t_player *player)
 {
 	if (ray->ray_dirx < 0)
 	{
 		ray->stepx = -1;
-		ray->side_distx = (frame->player.px - ray->mapx) * ray->delta_distx;
+		ray->side_distx = (player->px - ray->mapx) * ray->delta_distx;
 	}
 	else
 	{
 		ray->stepx = 1;
-		ray->side_distx = (ray->mapx + 1.0 - frame->player.px) * ray->delta_distx;
+		ray->side_distx = (ray->mapx + 1.0 - player->px) * ray->delta_distx;
 	}
 	if (ray->ray_diry < 0)
 	{
 		ray->stepy = -1;
-		ray->side_disty = (frame->player.py - ray->mapy) * ray->delta_disty;
+		ray->side_disty = (player->py - ray->mapy) * ray->delta_disty;
 	}
 	else
 	{
 		ray->stepy = 1;
-		ray->side_disty = (ray->mapy + 1.0 - frame->player.py) * ray->delta_disty;
+		ray->side_disty = (ray->mapy + 1.0 - player->py) * ray->delta_disty;
 	}
 }
 
-/*
-find which coordinate is the wall exposedo. 
-If we are hitting a vertical side of the wall (side = 1)
-and we are looking up (diry < 0) , the side of the wall is 
-exposed to NORTH, otherwise SOUTH
-if we are hitting a horizontal side of the wall on the array (side = 0)
-and we are looking east (dirX > 0) this side is exposed EAST, 
-otherwise WEST
-then NORHT, SOUTH, WEST, EAST correspond to arary of saved texture.
-*/
-void	get_wall_texture(t_ray *ray)
-{
-	if (ray->side == 0)
-	{
-		if (ray->ray_dirx > 0)
-			ray->wall_type = EAST;
-		else if (ray->ray_dirx < 0)
-			ray->wall_type = WEST;
-	}
-	else if (ray->side == 1)
-	{
-		if (ray->ray_diry < 0)
-			ray->wall_type = NORTH;
-		else if (ray->ray_diry > 0)
-			ray->wall_type = SOUTH;
-	}
-}
 /*
 Implements the DDA algorithm to find the first wall hit by the ray.
 The ray's grid position (mapx, mapy) is updated until a wall is encountered.
@@ -140,11 +115,10 @@ cameraX and y being the wall height)
 */
 void	wall_height(t_ray *ray)
 {
-	//printf("at wall_height we side_distx, side_disty = %f, %f\n", ray->side_distx, ray->side_disty);
 	if (ray->side == 0)
-		ray->wall_dist = (ray->side_distx  - ray->delta_distx);
+		ray->wall_dist = (ray->side_distx - ray->delta_distx);
 	else
-		ray->wall_dist = (ray->side_disty  - ray->delta_disty);
+		ray->wall_dist = (ray->side_disty - ray->delta_disty);
 	if (ray->wall_dist < 0.03)
 		ray->wall_dist = 0.03;
 	ray->w_height = (int) LENGTH / ray->wall_dist;
@@ -154,7 +128,6 @@ void	wall_height(t_ray *ray)
 		ray->w_start = 0;
 	if (ray->w_end >= LENGTH)
 		ray->w_end = LENGTH - 1;
-	//printf("at wall_height we w_start, w_end = %i, %i\n", ray->w_start, ray->w_end);
 }
 
 /*
@@ -163,15 +136,15 @@ Calls the functions above to calculate and render each ray's wall slice.
 */
 int	raycasting(t_frame *frame)
 {
-	int	x;
-	t_ray ray;
+	int		x;
+	t_ray	ray;
 
 	x = 0;
 	while (x < WIDTH)
 	{
 		init_ray(&ray);
 		setup_ray(&ray, frame, x);
-		ray_dist_setup(&ray, frame);
+		ray_dist_setup(&ray, &frame->player);
 		dda_execute(&ray, frame);
 		wall_height(&ray);
 		wall_to_texture(x, &ray, frame);

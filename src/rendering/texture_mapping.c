@@ -12,12 +12,40 @@
 
 #include "cub3d.h"
 
+/*
+find which coordinate is the wall exposed to. 
+If we are hitting a vertical side of the wall (side = 1)
+and we are looking up (diry < 0) , the side of the wall is 
+exposed to NORTH, otherwise SOUTH
+if we are hitting a horizontal side of the wall on the array (side = 0)
+and we are looking east (dirX > 0) this side is exposed EAST, 
+otherwise WEST
+then NORTH, SOUTH, WEST, EAST correspond to array of saved texture.
+*/
+void	get_wall_texture(t_ray *ray)
+{
+	if (ray->side == 0)
+	{
+		if (ray->ray_dirx > 0)
+			ray->wall_type = EAST;
+		else if (ray->ray_dirx < 0)
+			ray->wall_type = WEST;
+	}
+	else if (ray->side == 1)
+	{
+		if (ray->ray_diry < 0)
+			ray->wall_type = NORTH;
+		else if (ray->ray_diry > 0)
+			ray->wall_type = SOUTH;
+	}
+}
+
 /**
  * Calculates the horizontal texture coordinate (textx) based on the ray's 
  * intersection with a wall.
  *
- * @param frame A pointer to the frame structure containing player and raycasting 
- * information.
+ * @param frame A pointer to the frame structure containing player and 
+ * raycasting information.
  * @param ray A pointer to the ray structure containing information about the 
  * raycast.
  *
@@ -31,14 +59,14 @@
  */
 void	locate_textx(t_frame *frame, t_ray *ray)
 {
-	double wallx;	
+	double	wallx;
 
 	if (ray->side == 0)
 		wallx = frame->player.py + ray->wall_dist * ray->ray_diry;
 	else
-		wallx = frame->player.px+ ray->wall_dist * ray->ray_dirx;
+		wallx = frame->player.px + ray->wall_dist * ray->ray_dirx;
 	wallx -= floor(wallx);
-	ray->textx = (int) (wallx * (double) BMAP_SIZE);
+	ray->textx = (int)(wallx * (double) BMAP_SIZE);
 	if (ray->side == 0 && ray->ray_dirx < 0)
 		ray->textx = BMAP_SIZE - ray->textx - 1;
 	if (ray->side == 1 && ray->ray_diry > 0)
@@ -55,8 +83,8 @@ void	locate_textx(t_frame *frame, t_ray *ray)
  *
  * This function calculates the memory address of the pixel in the texture 
  * using the ray's texture 
- * coordinates (texty and textx). It then returns the color value of the pixel at
- *  that address.
+ * coordinates (texty and textx). It then returns the color value of the pixel 
+ * at that address.
  */
 int	pix_bitmap(t_frame *frame, t_ray *ray)
 {
@@ -66,7 +94,8 @@ int	pix_bitmap(t_frame *frame, t_ray *ray)
 	if (frame->load_scss[ray->wall_type] == 1)
 	{
 		img = &frame->loaded_texture[ray->wall_type];
-		pxl = img->addr + (ray->texty * img->line_len + ray->textx * (img->bits_per_pixel / 8));
+		pxl = img->addr + (ray->texty * img->line_len + ray->textx * \
+		(img->bits_per_pixel / 8));
 		return (*(int *) pxl);
 	}
 	else
@@ -76,30 +105,33 @@ int	pix_bitmap(t_frame *frame, t_ray *ray)
 /**
  * Renders a vertical slice of a wall based on a ray's intersection.
  *
- * @param x The x-coordinate on the screen where the wall slice should be drawn.
- * @param ray A pointer to the ray structure containing information about the 
- * raycast.
- * @param frame A pointer to the frame structure containing rendering information.
+ * @param x The x-coordinate on the screen where the wall slice should 
+ * be drawn.
+ * @param ray A pointer to the ray structure containing information about 
+ * the raycast.
+ * @param frame A pointer to the frame structure containing rendering 
+ * information.
  *
  * This function calculates the vertical slice of a wall to be rendered based 
  * on a ray's intersection point.
- * It determines how much to increment the texture coordinate for each pixel on 
- * the screen and then loops
- * through each pixel in the slice. For each pixel, it calculates the appropriate 
+ * It determines how much to increment the texture coordinate for each 
+ * pixel on the screen and then loops
+ * through each pixel in the slice. For each pixel, it calculates the
+ * appropriate 
  * texture y-coordinate, 
  * fetches the corresponding color from the texture, and draws it on the screen. 
  * It also applies shading 
- * for Y-axis-aligned walls to create depth perception. The pixels above and below 
- * the wall slice are filled
+ * for Y-axis-aligned walls to create depth perception. The pixels above 
+ * and below the wall slice are filled
  * with ceiling and floor colors, respectively.
  */
 void	wall_to_texture(int x, t_ray *ray, t_frame *frame)
 {
-	double step;
+	double	step;
 	double	text_pos;
 	int		y;
-	int color;
-	
+	int		color;
+
 	step = (float) BMAP_SIZE / ray->w_height;
 	text_pos = (ray->w_start - LENGTH / 2 + ray->w_height / 2) * step;
 	locate_textx(frame, ray);

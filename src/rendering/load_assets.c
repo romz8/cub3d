@@ -12,13 +12,22 @@
 
 #include "cub3d.h"
 
+/*
+receive a path as input, frame and integer
+will open the file in the path, if negative will set to zero the array which 
+index value correspond to the integer in input, display error message and 
+return -1. 
+otherwise close the opened path and set this very index to 1. it allows
+to check a specific texture assets and return 0 or 1 to know if file can be
+opened
+*/
 int	check_path(char *path, t_frame *frame, int i)
 {
-	int	fd;
-	char *card[4];
+	int		fd;
+	char	*card[4];
 
 	card[NORTH] = "NORTH";
-	card[SOUTH] =  "SOUTH";
+	card[SOUTH] = "SOUTH";
 	card[WEST] = "WEST";
 	card[EAST] = "EAST";
 	fd = open(path, O_RDONLY);
@@ -34,19 +43,27 @@ int	check_path(char *path, t_frame *frame, int i)
 	return (0);
 }
 
+/*
+iterate over texture loaded into map object and, if the load_success is 1
+(meaning the path could be opened) we load the texture to an image in the 
+corresponding index of the loaded_texture array. If there is any issue
+we setup the laod_success to 0. 
+*/
 void	texture_upload(t_frame *frame, t_map *map)
 {
 	t_img	img;
-	int	i;
-	
+	int		i;
+
 	i = 0;
 	while (i < 4)
 	{
 		if (frame->load_scss[i] == 1)
 		{
 			img = frame->loaded_texture[i];
-			img.img = mlx_xpm_file_to_image(frame->mlx, map->texture[i], &img.img_w, &img.img_h);
-			img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_len, &img.endian);
+			img.img = mlx_xpm_file_to_image(frame->mlx, map->texture[i], \
+			&img.img_w, &img.img_h);
+			img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, \
+			&img.line_len, &img.endian);
 			if (!img.addr || !img.img_w || !img.img_h || img.img_h != BMAP_SIZE \
 			|| img.img_w != BMAP_SIZE)
 				frame->load_scss[i] = 0;
@@ -60,6 +77,10 @@ void	texture_upload(t_frame *frame, t_map *map)
 	}
 }
 
+/*
+loading a set of colours to paint the walls with if texture assets
+encountered issue
+*/
 void	load_bckup_wall(t_frame *frame)
 {
 	frame->bckup_clr[0] = 0x00FF0000;
@@ -70,11 +91,11 @@ void	load_bckup_wall(t_frame *frame)
 
 void	load_texture(t_frame *frame, t_map *map)
 {
-	int i;
+	int	i;
 
 	load_bckup_wall(frame);
 	i = 0;
-	while ( i < 4)
+	while (i < 4)
 	{
 		check_path(map->texture[i], frame, i);
 		i++;
@@ -82,6 +103,7 @@ void	load_texture(t_frame *frame, t_map *map)
 	texture_upload(frame, map);
 }
 
+/* load sprite from assets*/
 void	load_sprite(t_frame *frame)
 {
 	t_img	*img;
@@ -97,11 +119,13 @@ void	load_sprite(t_frame *frame)
 	while (i < 5)
 	{
 		img = &frame->sprite[i];
-		img->img = mlx_xpm_file_to_image(frame->mlx, path[i], &img->img_w, &img->img_h);
-		img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_len, &img->endian);
+		img->img = mlx_xpm_file_to_image(frame->mlx, path[i], &img->img_w, \
+		&img->img_h);
+		img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, \
+		&img->line_len, &img->endian);
 		if (!img->addr)
 		{
-			printf("Asset sprite not loaded\n"); 
+			printf("Asset sprite not loaded\n");
 			exit(EXIT_FAILURE); // to replace with error management
 		}
 		frame->sprite[i] = *img;
