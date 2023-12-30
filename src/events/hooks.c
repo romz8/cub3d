@@ -17,6 +17,7 @@ int	esc_hook(int keycode, t_frame *frame)
 	if (keycode == 53)
 	{
 		mlx_destroy_window(frame->mlx, frame->mlx_wdw);
+		free_map(frame);
 		exit (0);
 	}
 	return (0);

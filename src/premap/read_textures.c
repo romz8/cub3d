@@ -3,63 +3,93 @@
 /*                                                        :::      ::::::::   */
 /*   read_textures.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frmurcia <frmurcia@student.42barcel>       +#+  +:+       +#+        */
+/*   By: frmurcia <frmurcia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 12:57:49 by frmurcia          #+#    #+#             */
-/*   Updated: 2023/12/13 19:37:34 by frmurcia         ###   ########.fr       */
+/*   Updated: 2023/12/29 20:03:28 by frmurcia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-// *texture->info[] es la particion en lineas de texture_raw
-void process_texture_raw(t_textures *texture)
+void	get_texture_type(t_textures *texture, char *info, char **paths)
 {
-   	int		i;
-	char	*info;
-	char	**paths;
-   
+	if (ft_strcmp("NO", paths[0]) && texture->paths->north == NULL)
+		texture->paths->north = ft_strdup(info);
+	else if (ft_strcmp("SO", paths[0]) && texture->paths->south == NULL)
+		texture->paths->south = ft_strdup(info);
+	else if (ft_strcmp("WE", paths[0]) && texture->paths->west == NULL)
+		texture->paths->west = ft_strdup(info);
+	else if (ft_strcmp("EA", paths[0]) && texture->paths->east == NULL)
+		texture->paths->east = ft_strdup(info);
+	else if (ft_strcmp("F", paths[0]) && texture->paths->floor == NULL)
+		texture->paths->floor = ft_strdup(info);
+	else if (ft_strcmp("C", paths[0]) && texture->paths->ceil == NULL)
+		texture->paths->ceil = ft_strdup(info);
+	else
+		ft_write_error("Error\nBad data in the paths\n");
+}
+
+void	ft_free_paths(char **paths)
+{
+	int	i;
+
 	i = 0;
-	texture->info = ft_split(texture->texture_raw, '\n');//texture->info[] es cada linea
-    while (i < 6 && texture->info[i])
-    {
-		texture->type = get_texture_type(texture, i);
-		paths = ft_split(texture->info[i], ' ');
-		info = ft_strtrim(paths[1], " ");
-		if (texture->type == NO)
-			texture->paths->north = info;
-		else if (texture->type == SO)
-			texture->paths->south = info;
-		else if (texture->type == WE)
-			texture->paths->west = info;
-		else if (texture->type == EA)
-			texture->paths->east = info;
-		else if (texture->type == F)
-			texture->paths->floor = info;
-		else if (texture->type == C)
-			texture->paths->ceil = info;
-        i++;
-    }
+	while (paths[i])
+	{
+		free(paths[i]);
+		i++;
+	}
+	free(paths);
+}
+
+void	process_texture_raw(t_textures *texture)
+{
+	int		i;
+	char	**paths;
+	char	**aux;
+	char	*textinfo;
+
+	i = -1;
+	aux = ft_split(texture->texture_raw, '\n');
+	while (aux[++i])
+	{
+		textinfo = ft_strdup(aux[i]);
+		paths = ft_split(textinfo, ' ');
+		free(textinfo);
+		if (paths[2] && paths[2] != NULL)
+			ft_write_error("Error\nBad data in the paths\n");
+		textinfo = ft_strtrim(paths[1], " ");
+		get_texture_type(texture, textinfo, paths);
+		free(textinfo);
+		ft_free_paths(paths);
+	}
+	i = 0;
+	while (aux[i])
+		free(aux[i++]);
+	free(aux);
+	if (!are_texture_paths_filled(texture->paths))
+		ft_write_error("Error\nTexture paths are not filled\n");
 }
 
 bool	only_map_chars(char *line)
 {
 	bool	found_map;
-	size_t	i;
-	size_t	length;
+	int		i;
+	int		length;
 
 	found_map = false;
 	i = 0;
 	length = ft_strlen(line);
-	while (i < ft_strlen(line))
+	while (i < length)
 	{
-		if (line[i] == '0' || line[i] == '1' || line[i] == 'N'
-			|| line[i] == 'S' || line[i] == 'E' || line[i] == 'W')
+		if (line[i] == '0' || line[i] == '1' || line[i] == 'N' || line[i] == 'S'
+			|| line[i] == 'E' || line[i] == 'W')
 		{
 			found_map = true;
 			i++;
 		}
-		else if (line[i] == ' ' || line[i] == '\t' || line[i] == '\n')
+		else if (line[i] == ' ' || line[i] == '\n')
 			i++;
 		else
 			return (false);
@@ -69,32 +99,16 @@ bool	only_map_chars(char *line)
 
 void	process_textures(t_textures *texture, char *line)
 {
-	if (!texture->texture_raw && !only_map_chars(line))
+	char	*tmp;
+
+	texture->path_found = true;
+	if (!texture->texture_raw)
 		texture->texture_raw = ft_strdup(line);
-	else if (texture->texture_raw && !only_map_chars(line))
-		texture->texture_raw = ft_strjoin(texture->texture_raw, line);
-	free(line);
-}
-
-void	ft_read_textures(char **argv, t_textures *texture)
-{
-	int		fd;
-	char	*line;
-
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-		ft_write_error("Error opening map file\n");
-	line = get_next_line(fd);
-	if (!line)
-		ft_write_error("Error reading lines of the map\n");
-	texture->texture_raw = NULL;
-	while (line)
+	else if (texture->texture_raw)
 	{
-		if (!is_empty_or_spaces(line))
-			process_textures(texture, line);
-		line = get_next_line(fd);
-		if (!line)
-			break ;
+		tmp = ft_strjoin(texture->texture_raw, line);
+		free(texture->texture_raw);
+		texture->texture_raw = ft_strdup(tmp);
+		free(tmp);
 	}
-	free(line);
 }

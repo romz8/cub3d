@@ -61,3 +61,21 @@ bool	ft_check_comas(char *input)
 	return (true);
 }
 
+char	*ft_strndup(char *s1, size_t len)
+{
+	char	*new_str;
+	size_t	i;
+
+	i = 0;
+	new_str = malloc(sizeof(char) * (len + 1));
+	if (!new_str)
+		return (NULL);
+	while (s1[i] && i < len)
+	{
+		new_str[i] = s1[i];
+		i++;
+	}
+	new_str[i] = '\0';
+	return (new_str);
+}
+

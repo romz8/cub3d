@@ -135,9 +135,12 @@ typedef struct s_map
   int color_f[3];
   int color_c[3];
   char *texture[4];
+  bool  found_map;
+	bool  space_found;
 }	t_map;
 
-typedef enum {
+typedef enum s_texture_type
+{
 	NO,
 	SO,
 	WE,
@@ -145,29 +148,46 @@ typedef enum {
 	F,
 	C,
 	UNKNOWN
-} t_texture_type;
+}	t_texture_type;
 
 typedef struct s_cardinal
 {
-	char			*north;
-	char			*south;
-	char			*east;
-	char			*west;
-	char			*floor;
-	char			*ceil;
+	char		*north;
+	char		*south;
+	char		*east;
+	char		*west;
+	char		*floor;
+	char		*ceil;
 }	t_cardinal;
 
-typedef struct s_textures {
-    t_texture_type	type;
-    char			*path;
-	char    		*texture_raw;
+typedef struct s_textures
+{
+	t_texture_type	type;
+	char			*path;
+	char			*texture_raw;
 	char			**info;
 	t_cardinal		*paths;
-} t_textures;
+	bool			path_found;
+}	t_textures;
+
+typedef struct s_color
+{
+	int				r;
+	int				g;
+	int				b;
+	unsigned int	hex;
+}	t_color;
+
+typedef struct s_map_color
+{
+	t_color		*floor_color;
+	t_color		*ceil_color;
+}	t_map_color;
 
 /* ====== init functions ===================================*/
 void  init_player(t_frame *frame, t_player *player, t_map *map);
 void	init_ray(t_ray *ray);
+void  free_map(t_frame *frame);
 
 /*====== rendering functions ================================*/
 int   render(t_frame *frame);
@@ -200,33 +220,45 @@ int	sprite_hook(int	key_code, int x, int y, t_frame *frame);
 
 /*===== FRANK REUNITE ====================== */
 
-//color.
-void	get_color_floor(t_map *map, t_textures *texture);
-void	get_color_ceil(t_map *map, t_textures *texture);
-void	        ft_check_color(t_map *map);
+//color.c
+t_map_color		init_color(t_map_color *color);
+void			get_color_floor(t_map_color *color, t_textures *texture);
+void			get_color_ceil(t_map_color *color, t_textures *texture);
+void			ft_check_color(t_map_color *color);
+unsigned int	create_hex_color(int r, int g, int b);
+void			free_colors(char **char_numbers);
 int	create_hex_trgb(int t, int r, int g, int b);
 
 //aux_color.c
-bool    is_numeric(const char *str);
-int		ft_atoi(const char *str);
+bool			is_numeric(const char *str);
+int				ft_atoi(const char *str);
+bool			is_color(int color);
+void			ft_check_color(t_map_color *color);
+
+// free_colors.c
+void			ft_free_colors(t_map_color *color);
+void			free_colors(char **col);
 
 //check parameters
-bool    ft_check_nbr_arguments(int argc);
-bool    ft_check_extension(char **argv);
-void    ft_check_parameters(int argc, char **argv);
-t_map   *ft_start_map(char **argv);
+bool	ft_check_nbr_arguments(int argc);
+bool	ft_check_extension(char **argv);
+void	ft_check_parameters(int argc, char **argv);
+//launch_and_free.c
+void	ft_free_map(t_map *map);
+void	ft_read_cub(char **argv, t_textures *text, t_map *map);
+t_map	ft_start_map(char **argv);
+
 
 // map.c
-t_map	*init_map(void);
+t_map	init_map(t_map *map);
 void	create_2d(t_map *map);
-void    handle_slash_en(t_map *map, int *y, int *k, int *x);
-void    handle_tabs(t_map *map, int y, int *x, int *k);
-void    copy_line_to_map(t_map *map);
+void	handle_slash_en(int *y, int *k, int *x);
+void	copy_line_to_map(t_map *map);
 
 // read_map.c
 bool    is_empty_or_spaces(char *line);
 void    process_map_line(t_map *map, char *line, int *line_number);
-int 	set_measures_and_close(t_map *map, int line_number, int fd);
+void	set_measures_and_close(t_map *map, int line_number, int fd);
 void 	ft_read_map(char** argv, t_map *map);
 void    print_filled_map(t_map *map);
 
@@ -236,38 +268,44 @@ void	ft_write_error(char *message);
 void	ft_write(char *message);
 bool    ft_strcmp(char *s1, char *s2);
 bool    ft_check_comas(char *input);
+char	*ft_strndup(char *s1, size_t len);
 
 // check_lines.c
 	// Funciones para asegurar que la linea es de mapa y ver que linea es la mas ancha
-bool    skip_whitespace(t_map *map, char *line, int *length, int *length_width);
-void    start_map(t_map *map, int *length, int *length_width, bool *map_started);
-void    process_other_chars(t_map *map, char *line, int *length,
-		int *length_width);
-bool    is_valid_map_line(char *line, t_map *map);
-bool    is_valid_line_inside(char *line, t_map *map);
+bool	is_map_char(char c);
+bool	skip_whitespace(char *line, int *length);
+bool	is_valid_map_line(char *line);
+bool	is_valid_line_inside(char *line);
 
 // get_next_line
-char    *get_next_line(int fd);
-char    *ft_read(int fd, char *ptr);
-char    *ft_cutword(char *prt);
-char    *ft_strchr(const char *s, int c);
-char    *ft_substr_m(char const *s, unsigned int start, size_t len);
+char	*get_next_line(int fd);
+int		count_line_words(char *str);
+void	clean_storage(char *storage);
+char	*extract_line(char *str);
+// get_next_line2.c
+char	*ft_strchr(const char *s, int c);
+char	*free_malloc(char *str);
+int		contain_line(char *str);
+int		get_storage_len(char *storage);
+char	*concat_str(char *storage, char *buffer, int len_b);
 
 //init_textures.c
-t_textures		*init_textures(void);
+bool			  are_texture_paths_filled(t_cardinal *paths);
+t_textures  init_textures(t_textures *texture);
+void        free_textures(t_textures *texture);
 
-// read_textures
-void    		ft_read_textures(char **argv, t_textures *texture);
-void   		 	process_textures(t_textures *texture, char *line);
-bool		    only_map_chars(char *line);
-void		    process_texture_raw (t_textures *texture);
-t_texture_type  get_texture_type(t_textures *texture, int index);
+// read_textures.c
+void			get_texture_type(t_textures *texture, char *info, char **paths);
+void			ft_free_paths(char **paths);
+void			process_texture_raw(t_textures *texture);
+bool			only_map_chars(char *line);
+void			process_textures(t_textures *texture, char *line);
 
 //player.c
 // t_player	*init_player(void);
-void		get_player(t_map *map);
-void		get_player_direction(t_map *map, int y, int x);
-bool		is_space_around(t_map *map, int x, int y);
-bool		check_map(t_map *map);
+void  get_player(t_map *map);
+void  get_player_direction(t_map *map, int y, int x);
+bool  is_space_around(t_map *map, int x, int y);
+bool  check_map(t_map *map);
 
 #endif

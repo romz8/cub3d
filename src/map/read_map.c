@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   read_map.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frmurcia <frmurcia@student.42barcel>       +#+  +:+       +#+        */
+/*   By: amurcia- <amurcia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 17:27:50 by frmurcia          #+#    #+#             */
-/*   Updated: 2023/12/09 19:48:09 by frmurcia         ###   ########.fr       */
+/*   Updated: 2023/12/29 20:03:26 by frmurcia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,94 +16,75 @@ bool	is_empty_or_spaces(char *line)
 {
 	while (*line)
 	{
-		if (*line != ' ' && *line != '\t' && *line != '\n'
-			&& *line != '\r' && *line != '\f' && *line != '\v')
+		if (*line != ' ' && *line != '\n' && *line != '\r'
+			&& *line != '\f' && *line != '\v')
 			return (false);
 		line++;
 	}
 	return (true);
 }
 
+void	append_line_to_map_raw(t_map *map, char *line, int *line_number)
+{
+	char	*tmp;
+	char	*dup;
+	int		len;
+
+	len = ft_strlen(line);
+	while (len > 0 && line[len - 2] == ' ')
+		len--;
+	if (len > map->max_width)
+		map->max_width = len + 1;
+	tmp = ft_strndup(line, len);
+	tmp[len - 1] = '\n';
+	if (!map->map_raw)
+	{
+		map->found_map = true;
+		map->map_raw = ft_strdup(tmp);
+		map->map_start = *line_number;
+	}
+	if (map->map_raw)
+	{
+		dup = ft_strjoin(map->map_raw, tmp);
+		free(map->map_raw);
+		map->map_raw = ft_strdup(dup);
+		free(dup);
+	}
+	free(tmp);
+}
+
 void	process_map_line(t_map *map, char *line, int *line_number)
 {
-	static int	found_content = 0;
-	static int  found_void = 0;
-
-	if (!map->map_raw && is_valid_map_line(line, map))
+	if (!map->map_raw)
 	{
-		map->map_raw = ft_strdup(line);
-		map->map_start = *line_number;
-		found_content = 1;
+		if (is_valid_map_line(line))
+		{
+			map->found_map = true;
+			append_line_to_map_raw(map, line, line_number);
+		}
+		else
+			map->found_map = false;
 	}
-	else if (map->map_raw && is_valid_line_inside(line, map) && !(is_empty_or_spaces(line)))
+	else if (map->map_raw)
 	{
-		map->map_raw = ft_strjoin(map->map_raw, line);
-		found_void = 0;
+		if (is_valid_line_inside(line))
+			append_line_to_map_raw(map, line, line_number);
+		else
+			ft_write_error("Error\nMap lines without allowed chars!\n");
 	}
-	else if (map->map_raw && is_valid_line_inside(line, map) && is_empty_or_spaces(line))
-    {
-		found_void = 1;
-		if (found_content && found_void)
-			ft_write_error("Error. Bad map!\n");
-	}
-	(*line_number)++;
-	free(line);
+	if (map->map_raw)
+		(*line_number)++;
 }
 
-int	set_measures_and_close(t_map *map, int line_number, int fd)
+void	set_measures_and_close(t_map *map, int line_number, int fd)
 {
-	map->map_end = line_number;
-	map->max_height = map->map_end - map->map_start + 3;
-	printf("Max height = %i\n", map->max_height);
 	if (close(fd) == -1)
-		ft_write_error("Error closing file descriptor\n");
-	return (fd);
-}
-
-void	ft_read_map(char **argv, t_map *map)
-{
-	int		fd;
-	char	*line;
-	int		line_number;
-
-	line_number = 0;
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-		ft_write_error("Error opening map file\n");
-	line = get_next_line(fd);
-	if (!line)
-		ft_write_error("Error reading lines of the map\n");
-	map->map_raw = NULL;
-	while (line)
+		ft_write_error("Error\nWhile closing file descriptor\n");
+	if (map->found_map)
 	{
-		process_map_line(map, line, &line_number);
-		line = get_next_line(fd);
-		if (!line)
-		{
-			map->map_end = line_number;
-			break ;
-		}
+		map->map_end = line_number;
+		map->max_height = map->map_end - map->map_start + 3;
 	}
-	free(line);
-	set_measures_and_close(map, line_number, fd);
-}
-
-void	print_filled_map(t_map *map)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < map->max_height)
-	{
-		j = 0;
-		while (j < map->max_width)
-		{
-			printf("%c", map->map_2d[i][j]);
-			j++;
-		}
-		i++;
-		printf("\n");
-	}
-	printf("\n");
+	else
+		ft_write_error("Error\nBad map, not only map chars!\n");
 }

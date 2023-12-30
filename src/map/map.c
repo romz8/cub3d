@@ -3,79 +3,54 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frmurcia <frmurcia@student.42barcel>       +#+  +:+       +#+        */
+/*   By: amurcia- <amurcia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 15:42:22 by frmurcia          #+#    #+#             */
-/*   Updated: 2023/12/14 19:24:54 by frmurcia         ###   ########.fr       */
+/*   Updated: 2023/12/29 15:32:02 by frmurcia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-t_map	*init_map(void)
+t_map	init_map(t_map *map)
 {
-	t_map	*map;
-
-	map = malloc(sizeof(t_map));
-	if (!map)
-	{
-		ft_write("Error\nCan't allocate memorry for map\n");
-		return (NULL);
-	}
 	map->map_raw = NULL;
-	map->map_2d = NULL;
 	map->max_height = 0;
 	map->max_width = 0;
-	printf("Map initialized successfully.\n");
-	return (map);
+	map->map_2d = NULL;
+	return (*map);
 }
 
 void	create_2d(t_map *map)
 {
-	char	**map_2d;
-	int		i;
-	int		j;
+	int	i;
+	int	j;
 
 	i = 0;
-	map_2d = (char **)malloc((map->max_height) * sizeof(char *));
-	if (!map_2d)
-	{
-		ft_write("Error\nCan't allocate memorry for map 2d\n");
-		return ;
-	}
+	map->map_2d = (char **)malloc((map->max_height) * sizeof(char *));
+	if (!map->map_2d)
+		ft_write_error("Error\nCan't allocate memorry for map 2d\n");
+	map->map_2d[map->max_height] = NULL;
 	while (i < map->max_height)
 	{
 		j = 0;
-		map_2d[i] = (char *)malloc((map->max_width) * sizeof(char));
+		map->map_2d[i] = (char *)malloc((map->max_width) * sizeof(char));
+		if (!map->map_2d[i])
+			ft_write_error("Error\nCan't allocate memorry for map 2d\n");
+		map->map_2d[i][map->max_width] = '\0';
 		while (j < map->max_width)
 		{
-			map_2d[i][j] = ' ';
+			map->map_2d[i][j] = ' ';
 			j++;
 		}
 		i++;
 	}
-	map->map_2d = map_2d;
 }
 
-void	handle_slash_en(t_map *map, int *y, int *k, int *x)
+void	handle_slash_en(int *y, int *k, int *x)
 {
 	(*x) = 1;
 	(*y)++;
-	(*k)++;
-	(void) map; // same unused map var
-}
-
-void	handle_tabs(t_map *map, int y, int *x, int *k)
-{
-	int	i;
-
-	i = 0;
-	while (i < 4 && *x < map->max_width - 1)
-	{
-		map->map_2d[y][(*x)] = ' ';
-		(*x)++;
-		i++;
-	}
 	(*k)++;
 }
 
@@ -85,20 +60,23 @@ void	copy_line_to_map(t_map *map)
 	int	x;
 	int	k;
 
-	y = 2;
+	y = 1;
 	x = 1;
 	k = 0;
 	while (y <= map->max_height - 1 && map->map_raw[k] != '\0')
 	{
+		x = 1;
 		while (x <= map->max_width - 1)
 		{
-			if (map->map_raw[k] != '\n' && map->map_raw[k] != '\0'
-				&& map->map_raw[k] != '\t')
+			if (map->map_raw[k] != '\n' && map->map_raw[k] != '\0')
 				map->map_2d[y][x++] = map->map_raw[k++];
-			else if (map->map_raw[k] == '\t')
-				handle_tabs(map, y, &x, &k);
+			else if (map->map_raw[k] == ' ')
+			{
+				map->map_2d[y][x++] = ' ';
+				k++;
+			}
 			else if (map->map_raw[k] == '\n')
-				handle_slash_en(map, &y, &k, &x);
+				handle_slash_en(&y, &k, &x);
 			else
 				break ;
 		}

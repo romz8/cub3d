@@ -3,137 +3,118 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frmurcia <frmurcia@student.42barcel>       +#+  +:+       +#+        */
+/*   By: amurcia- <amurcia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 16:10:05 by frmurcia          #+#    #+#             */
-/*   Updated: 2023/12/13 15:01:07 by frmurcia         ###   ########.fr       */
+/*   Updated: 2023/12/24 16:11:37 by frmurcia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-char	*ft_substr_m(char const *s, unsigned int start, size_t len)
+int	count_line_words(char *str)
 {
-	char	*str_nueva;
-	size_t	len_s;
-	size_t	cont;
-
-	len_s = 0;
-	while (s[len_s])
-		len_s++;
-	if (len_s < start)
-		len = 0;
-	else if (len >= (len_s - start))
-		len = len_s - start;
-	str_nueva = malloc(sizeof(char) * (len + 1));
-	if (!str_nueva)
-		return (NULL);
-	cont = 0;
-	while (cont < len)
-	{
-		str_nueva[cont] = s[start];
-		cont++;
-		start++;
-	}
-	str_nueva[cont] = '\0';
-	return (str_nueva);
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	int	cont;
-
-	cont = 0;
-	while (s[cont] != '\0')
-	{
-		if (s[cont] == (char)c)
-			return ((char *)(s + cont));
-		cont++;
-	}
-	if (s[cont] == (char)c)
-		return ((char *)(s + cont));
-	return (NULL);
-}
-
-char	*ft_cutword(char *prt)
-{
-	int		i;
-	int		j;
-	char	*dest;
+	int	i;
 
 	i = 0;
-	j = 0;
-	while (prt[i] != '\n' && prt[i])
+	while (str[i] != '\n')
 		i++;
-	if (!prt[i])
-	{
-		free(prt);
-		return (NULL);
-	}
-	if (prt[i] == '\n')
-		i++;
-	dest = malloc(sizeof(char) * (ft_strlen(prt) - i + 1));
-	if (!dest)
-		return (NULL);
-	while (prt[i])
-		dest[j++] = prt[i++];
-	dest[j] = '\0';
-	free(prt);
-	return (dest);
+	return (i + 1);
 }
 
-char	*ft_read(int fd, char *ptr)
+void	clean_storage(char *storage)
 {
-	int		bytes;
-	char	*temp;
+	int	old_len;
+	int	new_len;
+	int	i;
 
-	bytes = 1;
-	temp = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!temp)
-		return (NULL);
-	while (!ft_strchr(ptr, '\n') && bytes != 0)
+	old_len = count_line_words(storage);
+	new_len = ft_strlen(storage) - old_len;
+	i = 0;
+	while (i < new_len)
 	{
-		bytes = read(fd, temp, BUFFER_SIZE);
-		if (bytes < 0)
-		{
-			free(temp);
-			free(ptr);
-			return (NULL);
-		}
-		temp[bytes] = '\0';
-		ptr = ft_strjoin(ptr, temp);
+		storage[i] = storage[old_len + i];
+		i++;
 	}
-	free(temp);
-	return (ptr);
+	while (i < old_len)
+	{
+		storage[i] = '\0';
+		i++;
+	}
+	storage[i] = '\0';
+}
+
+char	*extract_line(char *str)
+{
+	int		words;
+	int		i;
+	char	*line;
+
+	words = count_line_words(str);
+	line = malloc(sizeof(char) * (words + 1));
+	if (line == NULL)
+	{
+		free(str);
+		return (NULL);
+	}
+	i = 0;
+	while (i < words)
+	{
+		line[i] = str[i];
+		i++;
+	}
+	line[i] = '\0';
+	clean_storage(str);
+	return (line);
+}
+
+char	*extract_last_line(char *str, int numbytes, char *buffer)
+{
+	int		words;
+	int		i;
+	char	*line;
+
+	free(buffer);
+	if (str == NULL || numbytes == -1)
+		return (free_malloc(str));
+	if (str[0] == '\0')
+		return (free_malloc(str));
+	words = ft_strlen(str);
+	line = malloc(sizeof(char) * (words + 1));
+	if (line == NULL)
+		return (free_malloc(str));
+	i = 0;
+	while (i < words)
+	{
+		line[i] = str[i];
+		str[i] = '\0';
+		i++;
+	}
+	line[i] = '\0';
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*ptr;
-	char		*line;
-	int			cont;
+	char		*buffer;
+	static char	*storage;
+	int			numbytes;
 
-	cont = 0;
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd <= 0)
 		return (NULL);
-	if (!ptr)
-		ptr = ft_strdup("");
-//	if (!handle_blank_lines(fd, &ptr))
-//		return (NULL);
-	ptr = ft_read(fd, ptr);
-	if (!ptr)
-	{
-		free(ptr);
+	if (storage && contain_line(storage) == 1)
+		return (extract_line(storage));
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (buffer == NULL)
+		return (free_malloc(storage));
+	numbytes = read(fd, buffer, BUFFER_SIZE);
+	if (numbytes == 0 || numbytes == -1)
+		return (extract_last_line(storage, numbytes, buffer));
+	buffer[BUFFER_SIZE] = '\0';
+	storage = concat_str(storage, buffer, numbytes);
+	free(buffer);
+	buffer = NULL;
+	if (storage == NULL)
 		return (NULL);
-	}
-	while (ptr[cont] != '\n' && ptr[cont])
-		cont++;
-	line = ft_substr_m(ptr, 0, cont + 1);
-	ptr = ft_cutword(ptr);
-	if (!line || !line[0])
-	{
-		free(line);
-		return (NULL);
-	}
-	return (line);
+	return (get_next_line(fd));
 }

@@ -25,7 +25,7 @@ int	render(t_frame *frame)
 	mouse_event(frame);
 	move(frame);
 	mlx_put_image_to_window(frame->mlx, frame->mlx_wdw, frame->img.img, 0, 0);
-	mini_map(frame);
+	mini_map(frame); 
 	draw_player(frame, 0);
 	return (1);
 }
