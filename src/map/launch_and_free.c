@@ -13,10 +13,13 @@
 #include "cub3d.h"
 
 void	transfer_texture(t_textures *texture, t_map *map, t_map_color *color);
+bool    not_allowed_chars(char *str);
 
 void	process_line(t_textures *text, t_map *map, char *line, int *line_number)
 {
-	if (!is_empty_or_spaces(line) && !only_map_chars(line))
+	 if (not_allowed_chars(line))
+         ft_write_error("Error\nUsage of a not allowed character\n");
+	else if (!is_empty_or_spaces(line) && !only_map_chars(line))
 		process_textures(text, line);
 	else if (!is_empty_or_spaces(line) && only_map_chars(line))
 	{
@@ -56,9 +59,14 @@ void	ft_read_cub(char **argv, t_textures *text, t_map *map)
 		free(line);
 		line = get_next_line(fd);
 	}
-	process_texture_raw(text);
-	map->map_end = line_number;
-	set_measures_and_close(map, line_number, fd);
+	if (map->found_map && text->path_found)
+	{
+		process_texture_raw(text);
+		map->map_end = line_number;
+		set_measures_and_close(map, line_number, fd);
+	}
+	else
+		ft_write_error("Error : Bad map");
 }
 
 /****************
@@ -137,3 +145,18 @@ void	transfer_texture(t_textures *texture, t_map *map, t_map_color *color)
 	map->color_f[2] = color->floor_color->b;
 	
 }
+
+bool    not_allowed_chars(char *str)
+{
+      int i;
+ 
+      i = 0;
+      while (str[i])
+      {
+          if (str[i] == '\t')
+              return (true);
+          i++;
+      }
+      return (false);
+ }
+     
