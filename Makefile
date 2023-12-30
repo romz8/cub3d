@@ -39,7 +39,7 @@ LIBFT_PATH = ./libft
 LIBFT_NAME = libft.a
 LIBFT = $(LIBFT_PATH)/$(LIBFT_NAME)
 
-NAME = cub3d
+NAME = cub3D
 
 all: $(MLX) $(LIBFT) $(OBJS_DIR) $(NAME) 
 

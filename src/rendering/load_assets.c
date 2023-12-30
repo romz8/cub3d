@@ -64,8 +64,7 @@ void	texture_upload(t_frame *frame, t_map *map)
 			&img.img_w, &img.img_h);
 			img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, \
 			&img.line_len, &img.endian);
-			if (!img.addr || !img.img_w || !img.img_h || img.img_h != BMAP_SIZE \
-			|| img.img_w != BMAP_SIZE)
+			if (!img.addr || !img.img_w || !img.img_h)
 				frame->load_scss[i] = 0;
 			else
 			{
