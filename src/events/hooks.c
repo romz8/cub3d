@@ -26,6 +26,7 @@ int	esc_hook(int keycode, t_frame *frame)
 int	close_handler(t_frame *frame)
 {
 	mlx_destroy_window(frame->mlx, frame->mlx_wdw);
+	free_map(frame);
 	exit (0);
 }
 

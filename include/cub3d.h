@@ -188,6 +188,7 @@ typedef struct s_map_color
 void  init_player(t_frame *frame, t_player *player, t_map *map);
 void	init_ray(t_ray *ray);
 void  free_map(t_frame *frame);
+void free_loader(t_map	*map);
 
 /*====== rendering functions ================================*/
 int   render(t_frame *frame);
@@ -293,6 +294,7 @@ char	*concat_str(char *storage, char *buffer, int len_b);
 bool			  are_texture_paths_filled(t_cardinal *paths);
 t_textures  init_textures(t_textures *texture);
 void        free_textures(t_textures *texture);
+void        free_mapcolor(t_map_color  *color);
 
 // read_textures.c
 void			get_texture_type(t_textures *texture, char *info, char **paths);

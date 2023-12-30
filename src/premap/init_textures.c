@@ -35,29 +35,3 @@ t_textures	init_textures(t_textures *texture)
 	texture->paths->ceil = NULL;
 	return (*texture);
 }
-
-void	free_textures(t_textures *texture)
-{
-	int	i;
-
-	i = 0;
-	if (texture)
-	{
-		if (texture->path != NULL)
-			free(texture->path);
-		if (texture->texture_raw)
-			free(texture->texture_raw);
-		if (texture->paths->north)
-			free(texture->paths->north);
-		if (texture->paths->south)
-			free(texture->paths->south);
-		if (texture->paths->east)
-			free(texture->paths->east);
-		if (texture->paths->west)
-			free(texture->paths->west);
-		if (texture->paths->floor)
-			free(texture->paths->floor);
-		if (texture->paths->ceil)
-			free(texture->paths->ceil);
-	}
-}

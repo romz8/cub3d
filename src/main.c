@@ -12,23 +12,6 @@
 
 #include "cub3d.h"
 
-void  free_map(t_frame *frame)
-{
-  int i;
-  
-  i = 0;
-  if (frame->game_map)
-  {
-    while (i < frame->map_h)
-    {
-      if (frame->game_map[i])
-        free(frame->game_map[i]);
-      i++;
-    }
-    free(frame->game_map);
-  }
-}
-
 void  print_showoff(void)
 {
   ft_putstr_fd("   ____   _      _   ___    ___ \n", STDOUT_FILENO);
@@ -49,7 +32,6 @@ void  build_game(t_frame *frame, t_img *img, t_player *player, t_map *map)
 	img->img = mlx_new_image(frame->mlx, WIDTH, LENGTH);
 	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_len, &img->endian);
 	frame->img = *img;
-  //get_player(map, player);
   init_player(frame, player, map);
   frame->player = *player;
 	frame->game_map = map->map_2d;
@@ -70,6 +52,7 @@ int main(int argc, char **argv)
   print_showoff();
   build_game(&frame, &img, &player, &map);
   load_texture(&frame, &map);
+  free_loader(&map);
   load_sprite(&frame);
 	mlx_mouse_move(frame.mlx_wdw, WIDTH / 2, LENGTH / 2);
 	mlx_hook(frame.mlx_wdw, 2, 1L<<0, key_hook_press, &frame);

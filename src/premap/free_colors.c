@@ -20,7 +20,9 @@ void	free_colors(char **col)
 	while (col[i])
 	{
 		free(col[i]);
+		col[i] = NULL;
 		i++;
 	}
 	free(col);
+	col = NULL;
 }

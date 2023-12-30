@@ -114,8 +114,9 @@ t_map	ft_start_map(char **argv)
 	copy_line_to_map(&map);
 	get_player(&map);
 	transfer_texture(&texture, &map, &color);
-	//free_textures(&texture);
-	return (map); 
+	free_textures(&texture);
+	free_mapcolor(&color);
+	return (map);
 }
 
 void	transfer_texture(t_textures *texture, t_map *map, t_map_color *color)

@@ -23,8 +23,8 @@ SRC = main.c events/hooks.c events/moves.c rendering/raycasting.c \
  rendering/init_render.c rendering/load_assets.c player/player.c map/aux_maps.c \
  map/check_lines.c map/check_parameters.c map/get_next_line.c map/map.c \
  map/read_map.c premap/aux_color.c premap/color.c premap/init_textures.c \
- premap/read_textures.c premap/read_textures2.c map/get_next_line2.c \
- map/launch_and_free.c premap/free_colors.c
+ premap/read_textures.c map/get_next_line2.c map/launch_and_free.c \
+ premap/free_colors.c clean/exit_clean.c
 
 OBJS_DIR = ./objs/
 SRC_PATH = src/
@@ -64,6 +64,7 @@ $(OBJS_DIR):
 	mkdir -p $(OBJS_DIR)/player
 	mkdir -p $(OBJS_DIR)/map
 	mkdir -p $(OBJS_DIR)/premap
+	mkdir -p $(OBJS_DIR)/clean
 
 $(OBJS_DIR)%.o: $(SRC_PATH)%.c Makefile $(HEADER)
 	$(CC) $(FLAGS) $(GRAPH_COMPILE) $(INC) -c $< -o $@
