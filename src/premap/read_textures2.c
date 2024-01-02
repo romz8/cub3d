@@ -34,14 +34,17 @@ char	*void_free_spaces(char *str)
 
 char	*process_dir_spaces(char *str, char *result, int *j, int *i)
 {
-	if ((str[*i] == 'N' && str[*i + 1] == 'O')
-		|| (str[*i] == 'S' && str[*i + 1] == 'O')
-		|| (str[*i] == 'W' && str[*i + 1] == 'E')
-		|| (str[*i] == 'E' && str[*i + 1] == 'A'))
+	if (str[*i] && str[*i + 1] && str[*i + 2])
 	{
-		result[(*j)++] = str[(*i)++];
-		result[(*j)++] = str[(*i)++];
-		result[(*j)++] = ' ';
+		if ((str[*i] == 'N' && str[*i + 1] == 'O' && str[*i + 2] == ' ')
+			|| (str[*i] == 'S' && str[*i + 1] == 'O' && str[*i + 2] == ' ')
+			|| (str[*i] == 'W' && str[*i + 1] == 'E' && str[*i + 2] == ' ')
+			|| (str[*i] == 'E' && str[*i + 1] == 'A' && str[*i + 2] == ' '))
+		{
+			result[(*j)++] = str[(*i)++];
+			result[(*j)++] = str[(*i)++];
+			result[(*j)++] = str[(*i)++];
+		}
 	}
 	return (result);
 }
@@ -70,4 +73,25 @@ char	*free_spaces(char *str)
 	}
 	result[j] = '\0';
 	return (result);
+}
+
+int	wordcount(const char *str)
+{
+	int		count;
+	bool	in_word;
+
+	count = 0;
+	in_word = false;
+	while (*str)
+	{
+		if (*str == ' ')
+			in_word = false;
+		else if (!in_word)
+		{
+			in_word = true;
+			count++;
+		}
+		str++;
+	}
+	return (count);
 }

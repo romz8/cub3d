@@ -12,28 +12,29 @@
 
 #include "cub3d.h"
 
-void  free_map(t_frame *frame)
-{
-  int	i;
-
-  if (!frame)
-	return ;
-  if (frame->game_map)
-  {
-    i = 0;
-	while (i < frame->map_h)
-    {
-      if (frame->game_map[i])
-        free(frame->game_map[i]);
-      i++;
-    }
-    free(frame->game_map);
-  }
-}
-
-void free_loader(t_map	*map)
+void	free_map(t_frame *frame)
 {
 	int	i;
+
+	if (!frame)
+		return ;
+	if (frame->game_map)
+	{
+		i = 0;
+		while (i < frame->map_h)
+		{
+			if (frame->game_map[i])
+				free(frame->game_map[i]);
+			i++;
+		}
+		free(frame->game_map);
+	}
+}
+
+void	free_loader(t_map	*map)
+{
+	int	i;
+
 	if (!map)
 		return ;
 	i = 0;
@@ -44,6 +45,7 @@ void free_loader(t_map	*map)
 		i++;
 	}
 }
+
 void	free_textures(t_textures *texture)
 {
 	int	i;
@@ -71,5 +73,3 @@ void	free_mapcolor(t_map_color *color)
 	if (color->floor_color)
 		free(color->floor_color);
 }
-
-

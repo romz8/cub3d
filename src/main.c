@@ -54,9 +54,10 @@ int	main(int argc, char **argv)
 
 	ft_check_parameters(argc, argv);
 	map = ft_start_map(argv);
+	check_texture(&frame, &map);
 	print_showoff();
 	build_game(&frame, &img, &player, &map);
-	load_texture(&frame, &map);
+	texture_upload(&frame, &map);
 	free_loader(&map);
 	load_sprite(&frame);
 	mlx_mouse_move(frame.mlx_wdw, WIDTH / 2, LENGTH / 2);

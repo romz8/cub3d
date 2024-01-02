@@ -33,10 +33,8 @@ int	check_path(char *path, t_frame *frame, int i)
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 	{
-		frame->load_scss[i] = 0;
-		printf("Error impossible to load wall %s, replace with color 0x%x\n" \
-		, card[i], frame->bckup_clr[i]);
-		return (-1);
+		printf("Error impossible to load wall %s, Exit Game\n", card[i]);
+		exit(EXIT_FAILURE);
 	}
 	close(fd);
 	frame->load_scss[i] = 1;
@@ -88,7 +86,7 @@ void	load_bckup_wall(t_frame *frame)
 	frame->bckup_clr[3] = 0x00FF00FF;
 }
 
-void	load_texture(t_frame *frame, t_map *map)
+void	check_texture(t_frame *frame, t_map *map)
 {
 	int	i;
 
@@ -96,10 +94,15 @@ void	load_texture(t_frame *frame, t_map *map)
 	i = 0;
 	while (i < 4)
 	{
-		check_path(map->texture[i], frame, i);
+		if (map->texture[i])
+			check_path(map->texture[i], frame, i);
+		else
+		{
+			printf("issue with texture path\n");
+			exit(EXIT_FAILURE);
+		}
 		i++;
 	}
-	texture_upload(frame, map);
 }
 
 /* load sprite from assets*/
@@ -125,7 +128,7 @@ void	load_sprite(t_frame *frame)
 		if (!img->addr)
 		{
 			printf("Asset sprite not loaded\n");
-			exit(EXIT_FAILURE); // to replace with error management
+			exit(EXIT_FAILURE);
 		}
 		frame->sprite[i] = *img;
 		i++;

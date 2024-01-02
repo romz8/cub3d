@@ -14,20 +14,21 @@
 
 void	get_texture_type(t_textures *texture, char *info, char **paths)
 {
-	if (ft_strcmp("NO", paths[0]) && texture->paths->north == NULL)
+	if (ft_strcmp(paths[0], "NO") && texture->paths->north == NULL)
 		texture->paths->north = ft_strdup(info);
-	else if (ft_strcmp("SO", paths[0]) && texture->paths->south == NULL)
+	else if (ft_strcmp(paths[0], "SO") && texture->paths->south == NULL)
 		texture->paths->south = ft_strdup(info);
-	else if (ft_strcmp("WE", paths[0]) && texture->paths->west == NULL)
+	else if (ft_strcmp(paths[0], "WE") && texture->paths->west == NULL)
 		texture->paths->west = ft_strdup(info);
-	else if (ft_strcmp("EA", paths[0]) && texture->paths->east == NULL)
+	else if (ft_strcmp(paths[0], "EA") && texture->paths->east == NULL)
 		texture->paths->east = ft_strdup(info);
-	else if (ft_strcmp("F", paths[0]) && texture->paths->floor == NULL)
+	else if (ft_strcmp(paths[0], "F") && texture->paths->floor == NULL)
 		texture->paths->floor = ft_strdup(info);
-	else if (ft_strcmp("C", paths[0]) && texture->paths->ceil == NULL)
+	else if (ft_strcmp(paths[0], "C") && texture->paths->ceil == NULL)
 		texture->paths->ceil = ft_strdup(info);
 	else
 		ft_write_error("Error\nUnrecognized line in the file\n");
+	ft_free_paths(paths);
 }
 
 void	ft_free_paths(char **paths)
@@ -46,6 +47,7 @@ void	ft_free_paths(char **paths)
 void	process_texture_raw(t_textures *texture)
 {
 	int		i;
+	int		w;
 	char	**paths;
 	char	**aux;
 	char	*textinfo;
@@ -54,22 +56,22 @@ void	process_texture_raw(t_textures *texture)
 	aux = ft_split(texture->texture_raw, '\n');
 	while (aux[++i])
 	{
+		w = wordcount(aux[i]);
+		if (w != 2)
+			ft_write_error("Error\\nNot correct arguments in the line\\n");
 		textinfo = free_spaces(aux[i]);
 		paths = ft_split(textinfo, ' ');
 		free(textinfo);
-		if (paths[2] && paths[2] != NULL)
-			ft_write_error("Error\nUnrecognized line\n");
 		textinfo = ft_strtrim(paths[1], " ");
 		get_texture_type(texture, textinfo, paths);
 		free(textinfo);
-		ft_free_paths(paths);
 	}
 	i = 0;
 	while (aux[i])
 		free(aux[i++]);
 	free(aux);
 	if (!are_texture_paths_filled(texture->paths))
-		ft_write_error("Error\nTexture paths not filled\n");
+		ft_write_error("Error\n Texture paths not filled\\n");
 }
 
 bool	only_map_chars(char *line)

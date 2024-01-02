@@ -72,7 +72,7 @@ void	init_player(t_frame *frame, t_player *player, t_map *map)
 	else
 	{
 		ft_putstr_fd("Error while loading direction \n", STDERR_FILENO);
-		exit(EXIT_FAILURE); //see how to handle memory later on
+		exit(EXIT_FAILURE);
 	}
 	player->px = map->p_pos[0];
 	player->py = map->p_pos[1];
