@@ -6,35 +6,49 @@
 /*   By: frmurcia <frmurcia@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/24 16:40:51 by frmurcia          #+#    #+#             */
-/*   Updated: 2023/12/30 12:25:38 by frmurcia         ###   ########.fr       */
+/*   Updated: 2024/01/02 11:19:09 by frmurcia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
 void	transfer_texture(t_textures *texture, t_map *map, t_map_color *color);
-bool    not_allowed_chars(char *str);
+bool	not_allowed_chars(char *str);
 
 void	process_line(t_textures *text, t_map *map, char *line, int *line_number)
 {
-	 if (not_allowed_chars(line))
-         ft_write_error("Error\nUsage of a not allowed character\n");
+	if (not_allowed_chars(line))
+		ft_write_error("Error\nUsage of a not allowed character\n");
 	else if (!is_empty_or_spaces(line) && !only_map_chars(line))
+	{
+		if (text->p_cl == 6)
+			ft_write_error("Error\nNot allowed chars in map\n");
+		else if (map->found_map && text->p_cl != 6)
+			ft_write_error("Error\nMap bewtween path lines\n");
+		text->p_cl++;
 		process_textures(text, line);
+	}
 	else if (!is_empty_or_spaces(line) && only_map_chars(line))
 	{
-		if (text->path_found == true && map->space_found == false)
+		if (text->p_cl == 6 && map->space_found == false)
 		{
 			map->found_map = true;
 			process_map_line(map, line, line_number);
 		}
-		else if (text->path_found == false)
-			ft_write_error("Error\nCan't find paths before map lines\n");
+		else if (text->p_cl != 6)
+			ft_write_error("Error\nCan't find full path before map lines\n");
 		else if (map->space_found == true)
 			ft_write_error("Error\nSpaces between map lines\n");
 	}
 	else if (is_empty_or_spaces(line) && map->found_map)
 		map->space_found = true;
+}
+
+void	ft_read_more_cub(t_map *map, t_textures *text, int line_number, int fd)
+{
+	process_texture_raw(text);
+	map->map_end = line_number;
+	set_measures_and_close(map, line_number, fd);
 }
 
 void	ft_read_cub(char **argv, t_textures *text, t_map *map)
@@ -47,9 +61,8 @@ void	ft_read_cub(char **argv, t_textures *text, t_map *map)
 	text->path_found = false;
 	map->space_found = false;
 	map->found_map = false;
+	text->p_cl = 0;
 	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-		ft_write_error("Error\nOpening map file\n");
 	line = get_next_line(fd);
 	if (!line)
 		ft_write_error("Error\nReading lines of the map\n");
@@ -59,20 +72,12 @@ void	ft_read_cub(char **argv, t_textures *text, t_map *map)
 		free(line);
 		line = get_next_line(fd);
 	}
-	if (map->found_map && text->path_found)
-	{
-		process_texture_raw(text);
-		map->map_end = line_number;
-		set_measures_and_close(map, line_number, fd);
-	}
+	if (map->found_map && text->path_found && text->p_cl == 6)
+		ft_read_more_cub(map, text, line_number, fd);
 	else
-		ft_write_error("Error : Bad map");
+		ft_write_error("Error: No filled paths\n");
 }
 
-/****************
- * ES UNA FUNCION SOLO PARA PROBAR QUE TODO SE CARGA BIEN.
- * BORRAR DESPUES!!!
- ******** */
 // void	print_everything(t_map *map, t_player *player,
 // 		t_textures *texture, t_map_color *color)
 // {
@@ -120,8 +125,8 @@ t_map	ft_start_map(char **argv)
 	ft_check_color(&color);
 	create_2d(&map);
 	copy_line_to_map(&map);
-	get_player(&map);
 	transfer_texture(&texture, &map, &color);
+	get_player(&map);
 	free_textures(&texture);
 	free_mapcolor(&color);
 	return (map);
@@ -143,20 +148,4 @@ void	transfer_texture(t_textures *texture, t_map *map, t_map_color *color)
 	map->color_f[0] = color->floor_color->r;
 	map->color_f[1] = color->floor_color->g;
 	map->color_f[2] = color->floor_color->b;
-	
 }
-
-bool    not_allowed_chars(char *str)
-{
-      int i;
- 
-      i = 0;
-      while (str[i])
-      {
-          if (str[i] == '\t')
-              return (true);
-          i++;
-      }
-      return (false);
- }
-     

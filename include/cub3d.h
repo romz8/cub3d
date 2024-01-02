@@ -168,6 +168,7 @@ typedef struct s_textures
 	char			**info;
 	t_cardinal		*paths;
 	bool			path_found;
+  int       p_cl;
 }	t_textures;
 
 typedef struct s_color
@@ -295,6 +296,7 @@ bool			  are_texture_paths_filled(t_cardinal *paths);
 t_textures  init_textures(t_textures *texture);
 void        free_textures(t_textures *texture);
 void        free_mapcolor(t_map_color  *color);
+char        *free_spaces(char *str);
 
 // read_textures.c
 void			get_texture_type(t_textures *texture, char *info, char **paths);

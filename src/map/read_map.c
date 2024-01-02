@@ -6,7 +6,7 @@
 /*   By: amurcia- <amurcia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 17:27:50 by frmurcia          #+#    #+#             */
-/*   Updated: 2023/12/29 20:03:26 by frmurcia         ###   ########.fr       */
+/*   Updated: 2024/01/02 11:02:44 by frmurcia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,5 @@ void	set_measures_and_close(t_map *map, int line_number, int fd)
 		map->max_height = map->map_end - map->map_start + 3;
 	}
 	else
-		ft_write_error("Error\nBad map, not only map chars!\n");
+		ft_write_error("Error\nBad map, not found a correct map!\n");
 }

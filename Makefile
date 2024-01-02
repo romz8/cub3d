@@ -24,7 +24,7 @@ SRC = main.c events/hooks.c events/moves.c rendering/raycasting.c \
  map/check_lines.c map/check_parameters.c map/get_next_line.c map/map.c \
  map/read_map.c premap/aux_color.c premap/color.c premap/init_textures.c \
  premap/read_textures.c map/get_next_line2.c map/launch_and_free.c \
- premap/free_colors.c clean/exit_clean.c
+ premap/free_colors.c clean/exit_clean.c premap/read_textures2.c
 
 OBJS_DIR = ./objs/
 SRC_PATH = src/

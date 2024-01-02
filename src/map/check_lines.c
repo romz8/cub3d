@@ -6,7 +6,7 @@
 /*   By: frmurcia <frmurcia@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 18:55:13 by frmurcia          #+#    #+#             */
-/*   Updated: 2023/12/24 15:59:40 by frmurcia         ###   ########.fr       */
+/*   Updated: 2023/12/31 18:02:04 by frmurcia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,18 @@ bool	is_valid_line_inside(char *line)
 			return (false);
 	}
 	return (true);
+}
+
+bool	not_allowed_chars(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\t')
+			return (true);
+		i++;
+	}
+	return (false);
 }
