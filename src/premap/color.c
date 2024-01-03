@@ -43,9 +43,9 @@ void	get_color_floor(t_map_color *color, t_textures *texture)
 		num_elements++;
 	if (num_elements == 3)
 	{
-		color->floor_color->r = ft_atoi(char_numbers[0]);
-		color->floor_color->g = ft_atoi(char_numbers[1]);
-		color->floor_color->b = ft_atoi(char_numbers[2]);
+		color->floor_color->r = ft_atoi_custom(char_numbers[0]);
+		color->floor_color->g = ft_atoi_custom(char_numbers[1]);
+		color->floor_color->b = ft_atoi_custom(char_numbers[2]);
 		free_colors(char_numbers);
 	}
 	else
@@ -66,9 +66,9 @@ void	get_color_ceil(t_map_color *color, t_textures *texture)
 		num_elements++;
 	if (num_elements == 3)
 	{
-		color->ceil_color->r = ft_atoi(char_numbers[0]);
-		color->ceil_color->g = ft_atoi(char_numbers[1]);
-		color->ceil_color->b = ft_atoi(char_numbers[2]);
+		color->ceil_color->r = ft_atoi_custom(char_numbers[0]);
+		color->ceil_color->g = ft_atoi_custom(char_numbers[1]);
+		color->ceil_color->b = ft_atoi_custom(char_numbers[2]);
 		free_colors(char_numbers);
 	}
 	else

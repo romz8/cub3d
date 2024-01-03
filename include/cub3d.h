@@ -237,6 +237,7 @@ bool			is_numeric(const char *str);
 int				ft_atoi(const char *str);
 bool			is_color(int color);
 void			ft_check_color(t_map_color *color);
+int				ft_atoi_custom(const char *str);
 
 // free_colors.c
 void			ft_free_colors(t_map_color *color);

@@ -1,10 +1,10 @@
 NO assets/eagle.xpm
-SO dfghjkl;uiopassets/bluestone.xpm
+SO assets/bluestone.xpm
 WE assets/wood.xpm 
 EA assets/greystone.xpm
 
-F 0,0,0
-C 0,0,0
+F 0,200,130
+C 0,200,130
 
 111111111111111111111
 101000001000000000001

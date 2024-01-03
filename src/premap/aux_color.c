@@ -26,7 +26,7 @@ bool	is_numeric(const char *str)
 	return (true);
 }
 
-int	ft_atoi(const char *str)
+int	ft_atoi_custom(const char *str)
 {
 	int	i;
 	int	n;
@@ -46,6 +46,8 @@ int	ft_atoi(const char *str)
 		i++;
 	while (ft_isdigit(str[i]))
 	{
+		if (n > (INT_MAX - (str[i] - '0')) / 10)
+			 ft_write_error("Error\nColor number too, too high\n");
 		n = 10 * n + (str[i] - '0');
 		i++;
 	}
