@@ -41,9 +41,14 @@ char	*process_dir_spaces(char *str, char *result, int *j, int *i)
 			|| (str[*i] == 'W' && str[*i + 1] == 'E' && str[*i + 2] == ' ')
 			|| (str[*i] == 'E' && str[*i + 1] == 'A' && str[*i + 2] == ' '))
 		{
-			result[(*j)++] = str[(*i)++];
-			result[(*j)++] = str[(*i)++];
-			result[(*j)++] = str[(*i)++];
+			if (wordcount(&str[*i + 3]) == 1)
+			{
+				result[(*j)++] = str[(*i)++];
+				result[(*j)++] = str[(*i)++];
+				result[(*j)++] = str[(*i)++];
+			}
+			else
+				ft_write_error("Error\nBad number of arguments in the line");
 		}
 	}
 	return (result);

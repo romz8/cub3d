@@ -30,14 +30,14 @@ void	create_2d(t_map *map)
 	map->map_2d = (char **)malloc((map->max_height) * sizeof(char *));
 	if (!map->map_2d)
 		ft_write_error("Error\nCan't allocate memorry for map 2d\n");
-	map->map_2d[map->max_height] = NULL;
+	map->map_2d[map->max_height - 1] = NULL;
 	while (i < map->max_height)
 	{
 		j = 0;
 		map->map_2d[i] = (char *)malloc((map->max_width) * sizeof(char));
 		if (!map->map_2d[i])
 			ft_write_error("Error\nCan't allocate memorry for map 2d\n");
-		map->map_2d[i][map->max_width] = '\0';
+		map->map_2d[i][map->max_width - 1] = '\0';
 		while (j < map->max_width)
 		{
 			map->map_2d[i][j] = ' ';

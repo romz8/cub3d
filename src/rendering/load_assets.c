@@ -33,7 +33,8 @@ int	check_path(char *path, t_frame *frame, int i)
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 	{
-		printf("Error impossible to load wall %s, Exit Game\n", card[i]);
+		printf("Error impossible to load wall parsed in position %i, ", i + 1);
+		printf("probably wall %s, Exit Game\n", card[i]);
 		exit(EXIT_FAILURE);
 	}
 	close(fd);

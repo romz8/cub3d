@@ -47,7 +47,6 @@ void	ft_free_paths(char **paths)
 void	process_texture_raw(t_textures *texture)
 {
 	int		i;
-	int		w;
 	char	**paths;
 	char	**aux;
 	char	*textinfo;
@@ -56,9 +55,6 @@ void	process_texture_raw(t_textures *texture)
 	aux = ft_split(texture->texture_raw, '\n');
 	while (aux[++i])
 	{
-		w = wordcount(aux[i]);
-		if (w != 2)
-			ft_write_error("Error\\nNot correct arguments in the line\\n");
 		textinfo = free_spaces(aux[i]);
 		paths = ft_split(textinfo, ' ');
 		free(textinfo);
@@ -71,7 +67,7 @@ void	process_texture_raw(t_textures *texture)
 		free(aux[i++]);
 	free(aux);
 	if (!are_texture_paths_filled(texture->paths))
-		ft_write_error("Error\n Texture paths not filled\\n");
+		ft_write_error("Error\n Texture paths not filled\n");
 }
 
 bool	only_map_chars(char *line)
